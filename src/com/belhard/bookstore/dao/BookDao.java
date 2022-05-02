@@ -1,4 +1,6 @@
-package com.belhard.module1;
+package com.belhard.bookstore.dao;
+
+import com.belhard.bookstore.dao.entity.Book;
 
 import java.util.List;
 

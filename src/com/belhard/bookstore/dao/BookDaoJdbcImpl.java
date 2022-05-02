@@ -1,19 +1,26 @@
-package com.belhard.module1;
+package com.belhard.bookstore.dao;
 
-import java.sql.*;
+import com.belhard.bookstore.dao.connection.DbConfigurator;
+import com.belhard.bookstore.dao.entity.Book;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookDaoJdbcImpl implements BookDao {
 
-    public static final String GET_ALL = "SELECT id, isbn, author, title, cover, price FROM books";
-    public static final String GET_BY_ID = "SELECT id, isbn, author, title, cover, price FROM books WHERE id= ? AND deleted = false";
-    public static final String GET_BY_ISBN = "SELECT id, isbn, author, title, cover, price FROM books WHERE isbn= ? AND deleted = false";
-    public static final String GET_BY_AUTHOR = "SELECT id, isbn, author, title, cover, price FROM books WHERE author= ? AND deleted = false";
-    public static final String INSERT = "INSERT INTO books (isbn, author, title, cover, price) VALUES (?,?,?,?,?)";
-    public static final String UPDATE = "UPDATE books SET isbn = ?, author = ?, title = ?, cover = ?, price = ?) WHERE id = ? AND deleted = false";
+    public static final String GET_ALL = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id";
+    public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id= ? AND deleted = false";
+    public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn= ? AND deleted = false";
+    public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author= ? AND deleted = false";
+    public static final String INSERT = "INSERT INTO books (isbn, author, title, cover_id, price) VALUES (?,?,?,(SELECT id FROM covers WHERE name = ?), ?)";
+    public static final String UPDATE = "UPDATE books SET isbn = ?, author = ?, title = ?, price = ?, cover_id = (SELECT id FROM covers WHERE name = ?) WHERE id = ? AND deleted = false";
     public static final String DELETE = "UPDATE books SET deleted = true WHERE id = ? AND deleted = false";
-    public static final String COUNT_ALL = "SELECT COUNT(id, isbn, author, title, cover, price) FROM books";
+    public static final String COUNT_ALL = "SELECT COUNT(*) FROM books";
 
     @Override
     public List<Book> getAllBooks() {
@@ -99,12 +106,12 @@ public class BookDaoJdbcImpl implements BookDao {
             statement.setString(1, book.getIsbn());
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getTitle());
-            statement.setObject(4, book.getCover());
+            statement.setString(4, book.getCover().toString());
             statement.setBigDecimal(5, book.getPrice());
-            int result = statement.executeUpdate();
+            statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                return processResultSet(generatedKeys);
+                return getBookById(generatedKeys.getLong("id"));
             } else {
                 throw new RuntimeException("Something went wrong... ");
             }
@@ -118,15 +125,20 @@ public class BookDaoJdbcImpl implements BookDao {
     public Book updateBook(Book book) {
         try {
             Connection connection = DbConfigurator.getConnection();
-            PreparedStatement statement = connection.prepareStatement(UPDATE);
+            PreparedStatement statement = connection.prepareStatement(UPDATE, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, book.getIsbn());
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getTitle());
-            statement.setObject(4, book.getCover());
-            statement.setBigDecimal(5, book.getPrice());
+            statement.setBigDecimal(4, book.getPrice());
+            statement.setString(5, book.getCover().toString());
             statement.setLong(6, book.getId());
             statement.executeUpdate();
-            return getBookById(book.getId());
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return getBookById(generatedKeys.getLong("id"));
+            } else {
+                throw new RuntimeException("Something went wrong... ");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

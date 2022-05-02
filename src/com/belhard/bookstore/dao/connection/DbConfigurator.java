@@ -1,4 +1,4 @@
-package com.belhard.module1;
+package com.belhard.bookstore.dao.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
