@@ -3,6 +3,7 @@ package com.belhard.bookstore.service;
 import com.belhard.bookstore.dao.BookDao;
 import com.belhard.bookstore.dao.BookDaoJdbcImpl;
 import com.belhard.bookstore.dao.entity.Book;
+import com.belhard.bookstore.service.dto.BookDto;
 
 import java.util.ArrayList;
 import java.util.List;
