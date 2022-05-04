@@ -1,24 +1,20 @@
 package com.belhard.bookstore.controller;
 
-import com.belhard.bookstore.dao.entity.Book;
+import com.belhard.bookstore.service.BookService;
+import com.belhard.bookstore.service.BookServiceImpl;
+import com.belhard.bookstore.service.dto.BookDto;
 import com.belhard.bookstore.util.PrintUtil;
-import com.belhard.bookstore.dao.BookDao;
-import com.belhard.bookstore.dao.BookDaoJdbcImpl;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    private static final BookDao BOOK_DAO = new BookDaoJdbcImpl();
+    private static final BookService BOOK_SERVICE = new BookServiceImpl();
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         chooseMainMenuOption(scanner);
         scanner.close();
-
-        System.out.println("Count of all books is " + BOOK_DAO.countAllBooks());
-
     }
 
     public static void chooseMainMenuOption(Scanner scanner) {
@@ -33,53 +29,53 @@ public class App {
         String command = options[0];
         switch (command) {
             case "all": {
-                List<Book> books = BOOK_DAO.getAllBooks();
-                for (Book book : books) {
-                    PrintUtil.showBriefInfo(book);
+                List<BookDto> bookDtos = BOOK_SERVICE.getAllBooks();
+                for (BookDto bookDto : bookDtos) {
+                    PrintUtil.showBriefInfo(bookDto);
                 }
                 break;
             }
             case "get": {
-                Book book = BOOK_DAO.getBookById(Long.parseLong(options[1]));
-                PrintUtil.showBriefInfo(book);
+                System.out.println(BOOK_SERVICE.getBookById(Long.parseLong(options[1])));
                 break;
             }
             case "delete": {
-                BOOK_DAO.deleteBook(Long.parseLong(options[1]));
+                BOOK_SERVICE.deleteBook(Long.parseLong(options[1]));
+                System.out.println("Book has been removed!");
                 break;
             }
             case "create": {
-                Book book = new Book();
+                BookDto bookDto = new BookDto();
                 System.out.println("Please, enter isbn: ");
-                book.setIsbn(scanner.nextLine());
+                bookDto.setIsbn(scanner.nextLine());
                 System.out.println("Please, enter author: ");
-                book.setAuthor(scanner.nextLine());
+                bookDto.setAuthor(scanner.nextLine());
                 System.out.println("Please, enter title: ");
-                book.setTitle(scanner.nextLine());
+                bookDto.setTitle(scanner.nextLine());
                 System.out.println("Please, enter cover: ");
-                book.setCover(Book.Cover.valueOf(scanner.nextLine()));
+                bookDto.setCover(BookDto.Cover.valueOf(scanner.nextLine()));
                 System.out.println("Please, enter price: ");
-                book.setPrice(scanner.nextBigDecimal());
-                Book createdBook = BOOK_DAO.createBook(book);
+                bookDto.setPrice(scanner.nextBigDecimal());
+                BookDto createdBook = BOOK_SERVICE.createBook(bookDto);
                 System.out.println("Book was created: ");
                 PrintUtil.showBriefInfo(createdBook);
                 break;
             }
             case "update": {
-                Book book = BOOK_DAO.getBookById(Long.parseLong(options[1]));
+                BookDto bookDto = BOOK_SERVICE.getBookById(Long.parseLong(options[1]));
                 System.out.println("Please, enter isbn: ");
-                book.setIsbn(scanner.nextLine());
+                bookDto.setIsbn(scanner.nextLine());
                 System.out.println("Please, enter author: ");
-                book.setAuthor(scanner.nextLine());
+                bookDto.setAuthor(scanner.nextLine());
                 System.out.println("Please, enter title: ");
-                book.setTitle(scanner.nextLine());
+                bookDto.setTitle(scanner.nextLine());
                 System.out.println("Please, enter cover: ");
-                book.setCover(Book.Cover.valueOf(scanner.nextLine()));
+                bookDto.setCover(BookDto.Cover.valueOf(scanner.nextLine()));
                 System.out.println("Please, enter price: ");
-                book.setPrice(scanner.nextBigDecimal());
-                BOOK_DAO.updateBook(book);
+                bookDto.setPrice(scanner.nextBigDecimal());
+                BookDto updateBook = BOOK_SERVICE.updateBook(bookDto);
                 System.out.println("Book was updated: ");
-                PrintUtil.showBriefInfo(book);
+                PrintUtil.showBriefInfo(updateBook);
                 break;
             }
             case "exit": {
