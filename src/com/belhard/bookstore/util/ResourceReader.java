@@ -8,12 +8,13 @@ import java.util.Properties;
 public class ResourceReader {
 
     private static final String LOCAL_SQL = "src/com/belhard/bookstore/properties/db.properties";
+    private static final String ELEPHANT_SQL = "src/com/belhard/bookstore/properties/elephantsqlDb.properties";
     private static Properties properties;
 
     public ResourceReader() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader(LOCAL_SQL));
+            reader = new BufferedReader(new FileReader(ELEPHANT_SQL));
             properties = new Properties();
             properties.load(reader);
         } catch (IOException e) {
