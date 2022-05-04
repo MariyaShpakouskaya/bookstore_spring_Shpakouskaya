@@ -1,6 +1,6 @@
 package com.belhard.bookstore.dao;
 
-import com.belhard.bookstore.dao.connection.DbConfigurator;
+import com.belhard.bookstore.connection.DbConfigurator;
 import com.belhard.bookstore.dao.entity.Book;
 
 import java.sql.Connection;
