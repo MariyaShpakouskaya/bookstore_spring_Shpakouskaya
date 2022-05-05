@@ -14,9 +14,9 @@ import java.util.List;
 public class BookDaoJdbcImpl implements BookDao {
 
     public static final String GET_ALL = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id";
-    public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id= ? AND deleted = false";
-    public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn= ? AND deleted = false";
-    public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author= ? AND deleted = false";
+    public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id = ? AND deleted = false";
+    public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn = ? AND deleted = false";
+    public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author = ? AND deleted = false";
     public static final String INSERT = "INSERT INTO books (isbn, author, title, cover_id, price) VALUES (?,?,?,(SELECT id FROM covers WHERE name = ?), ?)";
     public static final String UPDATE = "UPDATE books SET isbn = ?, author = ?, title = ?, price = ?, cover_id = (SELECT id FROM covers WHERE name = ?) WHERE id = ? AND deleted = false";
     public static final String DELETE = "UPDATE books SET deleted = true WHERE id = ? AND deleted = false";
