@@ -14,7 +14,7 @@ public class ResourceReader {
     public ResourceReader() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader(ELEPHANT_SQL));
+            reader = new BufferedReader(new FileReader(LOCAL_SQL));
             properties = new Properties();
             properties.load(reader);
         } catch (IOException e) {

@@ -13,12 +13,12 @@ import java.util.List;
 
 public class UserDaoJdbcImpl implements UserDao {
 
-    public static final String GET_ALL_USERS = "SELECT u.id, u.first_name, u.last_name, u.email, r.name AS roles FROM users u JOIN roles c ON u.role_id = r.id";
-    public static final String GET_BY_USER_ID = "SELECT u.id, u.first_name, u.last_name, u.email, r.name AS roles FROM users u JOIN roles c ON u.role_id = r.id WHERE u.id= ? AND deleted = false";
-    public static final String GET_BY_USER_LASTNAME = "SELECT u.id, u.first_name, u.last_name, u.email, r.name AS roles FROM users u JOIN roles c ON u.role_id = r.id WHERE u.last_name = ? AND deleted = false";
-    public static final String GET_BY_USER_EMAIL = "SELECT u.id, u.first_name, u.last_name, u.email, r.name AS roles FROM users u JOIN roles c ON u.role_id = r.id WHERE u.email = ? AND deleted = false";
-    public static final String INSERT_USER = "INSERT INTO users (firs_name, last_name, email, role_id, password) VALUES (?,?,?,(SELECT id FROM roles WHERE name = ?), ?)";
-    public static final String UPDATE_USER = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role_id = (SELECT id FROM covers WHERE name = ?), password = ? WHERE id = ? AND deleted = false";
+    public static final String GET_ALL_USERS = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id";
+    public static final String GET_BY_USER_ID = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id= ? AND deleted = false";
+    public static final String GET_BY_USER_LASTNAME = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.last_name = ? AND deleted = false";
+    public static final String GET_BY_USER_EMAIL = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ? AND deleted = false";
+    public static final String INSERT_USER = "INSERT INTO users (first_name, last_name, email, role_id, password) VALUES (?,?,?,(SELECT id FROM roles WHERE name = ?), ?)";
+    public static final String UPDATE_USER = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role_id = (SELECT id FROM roles WHERE name = ?), password = ? WHERE id = ? AND deleted = false";
     public static final String DELETE_USER = "UPDATE users SET deleted = true WHERE id = ? AND deleted = false";
     public static final String COUNT_ALL_USERS = "SELECT COUNT(*) FROM users";
 

@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        User user = USER_DAO.getUserByEmail(userDto.getEmail());
+        User user = USER_DAO.getUserByLastName(userDto.getLastName());
         if (user != null && !Objects.equals(user.getId(), userDto.getId())) {
             throw new RuntimeException("You can't update this user!");
         }
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int countAllUsers() {
-        return USER_DAO.countAllUsers();
+    public void countAllUsers() {
+        System.out.println("Count of all users is " + USER_DAO.countAllUsers());
     }
 }
