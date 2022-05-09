@@ -5,6 +5,8 @@ import com.belhard.bookstore.service.BookServiceImpl;
 import com.belhard.bookstore.service.dto.BookDto;
 import com.belhard.bookstore.util.ConsoleReader;
 import com.belhard.bookstore.util.PrintUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Scanner;
@@ -17,6 +19,8 @@ public class App {
             "enter \"create\" to add a book to the catalog\n" +
             "enter \"update id\" to change an existing book by id\n" +
             "enter \"exit\" to exit the program\n";
+    static Logger logger = LogManager.getLogger();
+
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -31,6 +35,7 @@ public class App {
         String command = options[0];
         switch (command) {
             case "all": {
+                logger.debug("Method \"getAllBooks\" called.");
                 List<BookDto> bookDtos = BOOK_SERVICE.getAllBooks();
                 for (BookDto bookDto : bookDtos) {
                     PrintUtil.showBriefInfo(bookDto);
@@ -38,21 +43,25 @@ public class App {
                 break;
             }
             case "get": {
+                logger.debug("Method \"getBookById\" called.");
                 PrintUtil.showBriefInfo(BOOK_SERVICE.getBookById(Long.parseLong(options[1])));
                 break;
             }
             case "delete": {
+                logger.debug("Method \"deleteBook\" called.");
                 BOOK_SERVICE.deleteBook(Long.parseLong(options[1]));
                 System.out.println("Book has been removed!");
                 break;
             }
             case "create": {
+                logger.debug("Method \"createBook\" called.");
                 BookDto createdBook = BOOK_SERVICE.createBook(ConsoleReader.readerForCreateBookDto(scanner));
                 System.out.println("Book was created: ");
                 PrintUtil.showBriefInfo(createdBook);
                 break;
             }
             case "update": {
+                logger.debug("Method \"updateBook\" called.");
                 BookDto bookDto = ConsoleReader.readerForUpdateBookDto
                         (scanner, BOOK_SERVICE.getBookById(Long.parseLong(options[1])));
                 BookDto updateBook = BOOK_SERVICE.updateBook(bookDto);

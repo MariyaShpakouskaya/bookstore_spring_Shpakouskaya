@@ -2,6 +2,8 @@ package com.belhard.bookstore.dao;
 
 import com.belhard.bookstore.connection.DbConfigurator;
 import com.belhard.bookstore.dao.entity.Book;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,26 +16,30 @@ import java.util.List;
 public class BookDaoJdbcImpl implements BookDao {
 
     public static final String GET_ALL = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id";
-    public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id= ? AND deleted = false";
-    public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn= ? AND deleted = false";
-    public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author= ? AND deleted = false";
+    public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id = ? AND deleted = false";
+    public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn = ? AND deleted = false";
+    public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author = ? AND deleted = false";
     public static final String INSERT = "INSERT INTO books (isbn, author, title, cover_id, price) VALUES (?,?,?,(SELECT id FROM covers WHERE name = ?), ?)";
     public static final String UPDATE = "UPDATE books SET isbn = ?, author = ?, title = ?, price = ?, cover_id = (SELECT id FROM covers WHERE name = ?) WHERE id = ? AND deleted = false";
     public static final String DELETE = "UPDATE books SET deleted = true WHERE id = ? AND deleted = false";
     public static final String COUNT_ALL = "SELECT COUNT(*) FROM books";
+    static Logger logger = LogManager.getLogger();
+
 
     @Override
     public List<Book> getAllBooks() {
         List<Book> books = new ArrayList<>();
         try {
             Statement statement = DbConfigurator.getConnection().createStatement();
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery(GET_ALL);
             while (resultSet.next()) {
                 Book book = processResultSet(resultSet);
                 books.add(book);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return books;
     }
@@ -55,12 +61,14 @@ public class BookDaoJdbcImpl implements BookDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_ID);
             statement.setLong(1, id);
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 book = processResultSet(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return book;
     }
@@ -71,12 +79,14 @@ public class BookDaoJdbcImpl implements BookDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_ISBN);
             statement.setString(1, isbn);
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 book = processResultSet(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return book;
     }
@@ -87,13 +97,15 @@ public class BookDaoJdbcImpl implements BookDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_AUTHOR);
             statement.setString(1, author);
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Book book = processResultSet(resultSet);
                 books.add(book);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return books;
     }
@@ -108,6 +120,7 @@ public class BookDaoJdbcImpl implements BookDao {
             statement.setString(3, book.getTitle());
             statement.setString(4, book.getCover().toString());
             statement.setBigDecimal(5, book.getPrice());
+            logger.debug("Database access.");
             statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -116,7 +129,8 @@ public class BookDaoJdbcImpl implements BookDao {
                 throw new RuntimeException("Something went wrong... ");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         throw new RuntimeException("...");
     }
@@ -132,6 +146,7 @@ public class BookDaoJdbcImpl implements BookDao {
             statement.setBigDecimal(4, book.getPrice());
             statement.setString(5, book.getCover().toString());
             statement.setLong(6, book.getId());
+            logger.debug("Database access.");
             statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -140,7 +155,8 @@ public class BookDaoJdbcImpl implements BookDao {
                 throw new RuntimeException("Something went wrong... ");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         throw new RuntimeException("...");
     }
@@ -150,10 +166,12 @@ public class BookDaoJdbcImpl implements BookDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(DELETE);
             statement.setLong(1, id);
+            logger.debug("Database access.");
             int result = statement.executeUpdate();
             return result == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         throw new RuntimeException("...");
     }
@@ -163,12 +181,14 @@ public class BookDaoJdbcImpl implements BookDao {
         int counter = 0;
         try {
             Statement statement = DbConfigurator.getConnection().createStatement();
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery(COUNT_ALL);
             if (resultSet.next()) {
                 counter = resultSet.getInt("count");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return counter;
     }

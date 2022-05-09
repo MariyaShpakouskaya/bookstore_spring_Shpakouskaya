@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" strict="true" name="XMLConfigTest" packages="org.apache.logging.log4j.test">
+    <Properties>
+        <property name="pattern_console">%d{HH:mm:ss} {%t} %-5level %logger{5} - %msg%n</property>
+        <property name="pattern_file">%d{yyyy MMM dd HH:mm:ss} {%t} %-5level %logger{5} - %msg%n</property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console_logger_bookstore">
+            <Layout type="PatternLayout" pattern="${pattern_console}"/>
+        </Console>
+        <File name="File_logger_bookstore" fileName="logs/debug.log" bufferedIO="true">
+            <PatternLayout pattern="${pattern_file}"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.belhard" level="all">
+            <Appender-ref ref="Console_logger_bookstore"/>
+        </Logger>
+        <Logger name="com.belhard" level="debug">
+            <Appender-ref ref="File_logger_bookstore"/>
+        </Logger>
+        <Root level="all">
+            <Appender-ref ref="Console_logger_bookstore"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
