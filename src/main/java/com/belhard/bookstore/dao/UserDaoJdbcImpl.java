@@ -2,6 +2,8 @@ package com.belhard.bookstore.dao;
 
 import com.belhard.bookstore.connection.DbConfigurator;
 import com.belhard.bookstore.dao.entity.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,7 +23,7 @@ public class UserDaoJdbcImpl implements UserDao {
     public static final String UPDATE_USER = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role_id = (SELECT id FROM roles WHERE name = ?), password = ? WHERE id = ? AND deleted = false";
     public static final String DELETE_USER = "UPDATE users SET deleted = true WHERE id = ? AND deleted = false";
     public static final String COUNT_ALL_USERS = "SELECT COUNT(*) FROM users";
-
+    static Logger logger = LogManager.getLogger();
 
     private User processResultSet(ResultSet resultSet) throws SQLException {
         User user = new User();
@@ -39,13 +41,15 @@ public class UserDaoJdbcImpl implements UserDao {
         List<User> users = new ArrayList<>();
         try {
             Statement statement = DbConfigurator.getConnection().createStatement();
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery(GET_ALL_USERS);
             while (resultSet.next()) {
                 User user = processResultSet(resultSet);
                 users.add(user);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return users;
     }
@@ -56,12 +60,14 @@ public class UserDaoJdbcImpl implements UserDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_USER_ID);
             statement.setLong(1, id);
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user = processResultSet(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return user;
     }
@@ -72,12 +78,14 @@ public class UserDaoJdbcImpl implements UserDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_USER_LASTNAME);
             statement.setString(1, lastName);
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user = processResultSet(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return user;
     }
@@ -88,12 +96,14 @@ public class UserDaoJdbcImpl implements UserDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_USER_EMAIL);
             statement.setString(1, email);
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user = processResultSet(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return user;
     }
@@ -108,6 +118,7 @@ public class UserDaoJdbcImpl implements UserDao {
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getRole().toString());
             statement.setString(5, user.getPassword());
+            logger.debug("Database access.");
             statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -116,7 +127,8 @@ public class UserDaoJdbcImpl implements UserDao {
                 throw new RuntimeException("Something went wrong... ");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         throw new RuntimeException("Something went wrong... ");
     }
@@ -132,6 +144,7 @@ public class UserDaoJdbcImpl implements UserDao {
             statement.setString(4, user.getRole().toString());
             statement.setString(5, user.getPassword());
             statement.setLong(6, user.getId());
+            logger.debug("Database access.");
             statement.executeUpdate();
             ResultSet generatedKeys = statement.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -140,7 +153,8 @@ public class UserDaoJdbcImpl implements UserDao {
                 throw new RuntimeException("Something went wrong... ");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         throw new RuntimeException("Something went wrong... ");
     }
@@ -150,10 +164,12 @@ public class UserDaoJdbcImpl implements UserDao {
         try {
             PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(DELETE_USER);
             statement.setLong(1, id);
+            logger.debug("Database access.");
             int result = statement.executeUpdate();
             return result == 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         throw new RuntimeException("Something went wrong... ");
     }
@@ -163,12 +179,14 @@ public class UserDaoJdbcImpl implements UserDao {
         int counter = 0;
         try {
             Statement statement = DbConfigurator.getConnection().createStatement();
+            logger.debug("Database access.");
             ResultSet resultSet = statement.executeQuery(COUNT_ALL_USERS);
             if (resultSet.next()) {
                 counter = resultSet.getInt("count");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.error("Error: the request failed.");
         }
         return counter;
     }
