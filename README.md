@@ -2,5 +2,7 @@
 
 This project is an online bookstore.
 
-The goal for this project is to implement a DAO object
-for the table of books with basic CRUD operation.
+* module 1 - book object (entity)
+* module 2 - bookDto object (service) 
+* module 3 - user objects (entity and service)
+* module 4 - servlet
