@@ -1,4 +1,19 @@
+# Complied class file
+*.class
+
+# Log file
+*.log
+
+# Package files
+*.jar
+*.war
+*.nar
+*.zip
+*.rar
+
+#Idea, Maven
 out/
-target/
 .idea/
-bookstore_Shpakouskaya.iml
+target/
+*.iml
+*.ini
