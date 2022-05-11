@@ -1,2 +1,19 @@
+# Complied class file
+*.class
+
+# Log file
+*.log
+
+# Package files
+*.jar
+*.war
+*.nar
+*.zip
+*.rar
+
+#Idea, Maven
 out/
+.idea/
 target/
+*.iml
+*.ini
