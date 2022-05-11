@@ -23,7 +23,7 @@ public class UsersController extends HttpServlet {
         List<UserDto> userDtos = USER_SERVICE.getAllUsers();
         out.write(("<style>*{text-align: center; color: Purple; background-color: #BC8F8F;font-size: 20px}</style>"));
         out.write(("<h1>USERS</h1>"));
-        out.write(("<table id=\"t1\" width=\"100%\">"));
+        out.write(("<table id=\"t1\" width=\"90%\">"));
         out.write("<tr><th>id</th><th>First name</th><th>Last name</th><th>Email</th><th>Role</th><th>Password</th>");
         for (UserDto userDto : userDtos) {
             out.write("<tr><td>" + userDto.getId() + "</td>");

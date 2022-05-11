@@ -48,8 +48,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getBookById(Long id) {
-        Book book = BOOK_DAO.getBookById(id);
-        return bookToBookDto(book);
+        try {
+            Book book = BOOK_DAO.getBookById(id);
+            return bookToBookDto(book);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

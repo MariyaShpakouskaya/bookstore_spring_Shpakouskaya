@@ -23,7 +23,7 @@ public class BooksController extends HttpServlet {
         List<BookDto> bookDtos = BOOK_SERVICE.getAllBooks();
         out.write(("<style>*{text-align: center; color: Crimson; background-color: #00FA9A;font-size: 20px}</style>"));
         out.write(("<h1>BOOKS</h1>"));
-        out.write(("<table id=\"t1\" width=\"100%\">"));
+        out.write(("<table id=\"t1\" width=\"90%\">"));
         out.write("<tr><th>ID</th><th>ISBN</th><th>TITLE</th><th>AUTHOR</th><th>COVER</th><th>PRICE</th>");
         for (BookDto bookDto : bookDtos) {
             out.write("<tr><td>" + bookDto.getId() + "</td>");
@@ -31,7 +31,7 @@ public class BooksController extends HttpServlet {
             out.write("<td>" + bookDto.getTitle() + "</td>");
             out.write("<td>" + bookDto.getAuthor() + "</td>");
             out.write("<td>" + bookDto.getCover().toString().toLowerCase() + "</td>");
-            out.write("<td>" + bookDto.getPrice() + "</td></tr>");
+            out.write("<td>" + bookDto.getPrice() + " byn</td></tr>");
         }
         out.write("</table>");
     }

@@ -1,4 +1,4 @@
-package com.belhard.bookstore.controller;
+package com.belhard.bookstore.controller.apps;
 
 import com.belhard.bookstore.service.UserService;
 import com.belhard.bookstore.service.UserServiceImpl;

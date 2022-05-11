@@ -48,8 +48,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        User user = USER_DAO.getUserById(id);
-        return userToUserDto(user);
+        try {
+            User user = USER_DAO.getUserById(id);
+            return userToUserDto(user);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

@@ -17,14 +17,16 @@ public class UserController extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
         Long id = Long.valueOf(request.getParameter("id"));
         UserDto userDto = USER_SERVICE.getUserById(id);
         if (userDto == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.write("<style>*{text-align: center; color: Red; font-size: 30px}</style>");
+            out.write("User doesn't exist!");
             return;
         }
         response.setStatus(200);
-        PrintWriter out = response.getWriter();
         out.write(("<style>*{text-align: center; line-height: 2; color: DarkBlue; background-color: #00FFFF;font-size: 25px}</style>"));
         out.write(("<h1>USER</h1>"));
         out.write(("<div>" + userDto.getFirstName() + " " + userDto.getLastName() + "</div>"));

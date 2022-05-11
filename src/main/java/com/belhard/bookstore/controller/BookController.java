@@ -17,19 +17,22 @@ public class BookController extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
         Long id = Long.valueOf(request.getParameter("id"));
         BookDto bookDto = BOOK_SERVICE.getBookById(id);
         if (bookDto == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.write("<style>*{text-align: center; color: Red; font-size: 30px}</style>");
+            out.write("Book doesn't exist!");
             return;
         }
         response.setStatus(200);
-        PrintWriter out = response.getWriter();
         out.write(("<style>*{text-align: center; color: DarkGreen; background-color: #DB7093;font-size: 16px}</style>"));
         out.write(("<h1>BOOK</h1>"));
         out.write(("<div>" + bookDto.getTitle().toUpperCase() + " by " + bookDto.getAuthor() + "</div>"));
         out.write(("<div>ISBN: " + bookDto.getIsbn() + "</div>"));
         out.write(("<div>Cover: " + bookDto.getCover().toString().toLowerCase() + "</div>"));
         out.write(("<div>Price: " + bookDto.getPrice() + " byn</div>"));
+
     }
 }
