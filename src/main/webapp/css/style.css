@@ -1,0 +1,24 @@
+body {
+text-align: center;
+color: Navy;
+background-color: #EE82EE;
+}
+
+table {
+  text-align: center;
+  color: DarkBlue;
+  border-collapse: collapse;
+  border: 3px solid grey;
+  border-top: 3px solid grey;
+  font-family: "Times New Roman", Times, serif;
+  margin: 0 auto;
+}
+
+th, td {
+   border: 1px solid grey;
+   text-align: center;
+}
+
+td {
+   border-bottom: 1px solid grey;
+}
