@@ -4,6 +4,7 @@ import com.belhard.bookstore.connection.DbConfigurator;
 import com.belhard.bookstore.dao.entity.Book;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component("bookDao")
 public class BookDaoJdbcImpl implements BookDao {
 
     public static final String GET_ALL = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id";
