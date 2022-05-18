@@ -4,6 +4,7 @@ import com.belhard.bookstore.connection.DbConfigurator;
 import com.belhard.bookstore.dao.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component("userDao")
 public class UserDaoJdbcImpl implements UserDao {
 
     public static final String GET_ALL_USERS = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id";
@@ -24,7 +26,7 @@ public class UserDaoJdbcImpl implements UserDao {
     public static final String DELETE_USER = "UPDATE users SET deleted = true WHERE id = ? AND deleted = false";
     public static final String COUNT_ALL_USERS = "SELECT COUNT(*) FROM users";
     static Logger logger = LogManager.getLogger();
-
+    
     private User processResultSet(ResultSet resultSet) throws SQLException {
         User user = new User();
         user.setId(resultSet.getLong("id"));

@@ -1,17 +1,30 @@
 package com.belhard.bookstore.service;
 
 import com.belhard.bookstore.dao.UserDao;
-import com.belhard.bookstore.dao.UserDaoJdbcImpl;
 import com.belhard.bookstore.dao.entity.User;
 import com.belhard.bookstore.service.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Service("userService")
 public class UserServiceImpl implements UserService {
+    private UserDao userDao;
 
-    private final UserDao USER_DAO = new UserDaoJdbcImpl();
+    public UserServiceImpl() {
+    }
+
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     private UserDto userToUserDto(User user) {
         UserDto userDto = new UserDto();
@@ -37,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> users = USER_DAO.getAllUsers();
+        List<User> users = userDao.getAllUsers();
         List<UserDto> userDtos = new ArrayList<>();
         for (User user : users) {
             UserDto userDto = userToUserDto(user);
@@ -49,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long id) {
         try {
-            User user = USER_DAO.getUserById(id);
+            User user = userDao.getUserById(id);
             return userToUserDto(user);
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -59,45 +72,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserByLastName(String lastName) {
-        User user = USER_DAO.getUserByLastName(lastName);
+        User user = userDao.getUserByLastName(lastName);
         return userToUserDto(user);
     }
 
     @Override
     public UserDto getUserByEmail(String email) {
-        User user = USER_DAO.getUserByEmail(email);
+        User user = userDao.getUserByEmail(email);
         return userToUserDto(user);
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User existing = USER_DAO.getUserByEmail(userDto.getEmail());
+        User existing = userDao.getUserByEmail(userDto.getEmail());
         if (existing != null) {
             throw new RuntimeException("This user is already exist!");
         }
         User userToCreate = userDtoToUser(userDto);
-        return userToUserDto(USER_DAO.createUser(userToCreate));
+        return userToUserDto(userDao.createUser(userToCreate));
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) {
-        User user = USER_DAO.getUserByLastName(userDto.getLastName());
+        User user = userDao.getUserByLastName(userDto.getLastName());
         if (user != null && !Objects.equals(user.getId(), userDto.getId())) {
             throw new RuntimeException("You can't update this user!");
         }
         User userToUpdate = userDtoToUser(userDto);
-        return userToUserDto(USER_DAO.updateUser(userToUpdate));
+        return userToUserDto(userDao.updateUser(userToUpdate));
     }
 
     @Override
     public void deleteUser(Long id) {
-        if (!USER_DAO.deleteUser(id)) {
+        if (!userDao.deleteUser(id)) {
             throw new RuntimeException("This user didn't deleted!");
         }
     }
 
     @Override
     public void countAllUsers() {
-        System.out.println("Count of all users is " + USER_DAO.countAllUsers());
+        System.out.println("Count of all users is " + userDao.countAllUsers());
     }
 }
