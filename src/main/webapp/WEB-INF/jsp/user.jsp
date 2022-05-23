@@ -4,7 +4,7 @@
 <html>
     <head>
         <title>User</title>
-        <link rel="stylesheet" href="css/style.css"></link>
+        <link rel="stylesheet" href="../css/style.css"/>
     </head>
     <body>
         <h1>${user.firstName} ${user.lastName}</h1>
