@@ -1,195 +1,112 @@
 package com.belhard.bookstore.dao;
 
-import com.belhard.bookstore.connection.DbConfigurator;
 import com.belhard.bookstore.dao.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-@Component("userDao")
+@Repository("userDao")
 public class UserDaoJdbcImpl implements UserDao {
 
     public static final String GET_ALL_USERS = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id";
-    public static final String GET_BY_USER_ID = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id= ? AND deleted = false";
-    public static final String GET_BY_USER_LASTNAME = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.last_name = ? AND deleted = false";
-    public static final String GET_BY_USER_EMAIL = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = ? AND deleted = false";
-    public static final String INSERT_USER = "INSERT INTO users (first_name, last_name, email, role_id, password) VALUES (?,?,?,(SELECT id FROM roles WHERE name = ?), ?)";
-    public static final String UPDATE_USER = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role_id = (SELECT id FROM roles WHERE name = ?), password = ? WHERE id = ? AND deleted = false";
-    public static final String DELETE_USER = "UPDATE users SET deleted = true WHERE id = ? AND deleted = false";
+    public static final String GET_BY_USER_ID = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id= :id AND deleted = false";
+    public static final String GET_BY_USER_LASTNAME = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.last_name = :last_name AND deleted = false";
+    public static final String GET_BY_USER_EMAIL = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = :email AND deleted = false";
+    public static final String INSERT_USER = "INSERT INTO users (first_name, last_name, email, role_id, password) VALUES (:first_name,:last_name,:email,(SELECT id FROM roles WHERE name = :role), :password)";
+    public static final String UPDATE_USER = "UPDATE users SET first_name = :first_name, last_name = :last_name, email = :email, role_id = (SELECT id FROM roles WHERE name = :role), password = :password WHERE id = :id AND deleted = false";
+    public static final String DELETE_USER = "UPDATE users SET deleted = true WHERE id = :id AND deleted = false";
     public static final String COUNT_ALL_USERS = "SELECT COUNT(*) FROM users";
     static Logger logger = LogManager.getLogger();
-    
-    private User processResultSet(ResultSet resultSet) throws SQLException {
-        User user = new User();
-        user.setId(resultSet.getLong("id"));
-        user.setFirstName(resultSet.getString("first_name"));
-        user.setLastName(resultSet.getString("last_name"));
-        user.setEmail(resultSet.getString("email"));
-        user.setPassword(resultSet.getString("password"));
-        user.setRole(User.Role.valueOf(resultSet.getString("role")));
-        return user;
+    private final NamedParameterJdbcTemplate template;
+    private final UserRowMapper rowMapper;
+
+    @Autowired
+    public UserDaoJdbcImpl(NamedParameterJdbcTemplate template, UserRowMapper rowMapper) {
+        this.template = template;
+        this.rowMapper = rowMapper;
     }
 
     @Override
     public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        try {
-            Statement statement = DbConfigurator.getConnection().createStatement();
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery(GET_ALL_USERS);
-            while (resultSet.next()) {
-                User user = processResultSet(resultSet);
-                users.add(user);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return users;
+        return template.query(GET_ALL_USERS, rowMapper);
     }
 
     @Override
     public User getUserById(Long id) {
-        User user = null;
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_USER_ID);
-            statement.setLong(1, id);
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                user = processResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return user;
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return template.queryForObject(GET_BY_USER_ID, params, rowMapper);
     }
 
     @Override
     public User getUserByLastName(String lastName) {
-        User user = null;
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_USER_LASTNAME);
-            statement.setString(1, lastName);
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                user = processResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return user;
+        Map<String, Object> params = new HashMap<>();
+        params.put("last_name", lastName);
+        return template.queryForObject(GET_BY_USER_LASTNAME, params, rowMapper);
     }
 
     @Override
     public User getUserByEmail(String email) {
-        User user = null;
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_USER_EMAIL);
-            statement.setString(1, email);
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                user = processResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return user;
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", email);
+        return template.queryForObject(GET_BY_USER_EMAIL, params, rowMapper);
     }
 
     @Override
     public User createUser(User user) {
-        try {
-            Connection connection = DbConfigurator.getConnection();
-            PreparedStatement statement = connection.prepareStatement(INSERT_USER, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, user.getFirstName());
-            statement.setString(2, user.getLastName());
-            statement.setString(3, user.getEmail());
-            statement.setString(4, user.getRole().toString());
-            statement.setString(5, user.getPassword());
-            logger.debug("Database access.");
-            statement.executeUpdate();
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return getUserById(generatedKeys.getLong("id"));
-            } else {
-                throw new RuntimeException("Something went wrong... ");
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        Map<String, Object> params = new HashMap<>();
+        params.put("first_name", user.getFirstName());
+        params.put("last_name", user.getLastName());
+        params.put("email", user.getEmail());
+        params.put("role", user.getRole().toString().toLowerCase());
+        params.put("password", user.getPassword());
+        SqlParameterSource source = new MapSqlParameterSource(params);
+        int rowsUpdated = template.update(INSERT_USER, source, keyHolder, new String[]{"id"});
+        if (rowsUpdated != 1) {
+            throw new RuntimeException("Can't create user!" + user);
         }
-        throw new RuntimeException("Something went wrong... ");
+        Long id = Optional.ofNullable(keyHolder.getKey()).map(Number::longValue)
+                .orElseThrow(() -> new RuntimeException("Can't create user!"));
+        return getUserById(id);
     }
 
     @Override
     public User updateUser(User user) {
-        try {
-            Connection connection = DbConfigurator.getConnection();
-            PreparedStatement statement = connection.prepareStatement(UPDATE_USER, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, user.getFirstName());
-            statement.setString(2, user.getLastName());
-            statement.setString(3, user.getEmail());
-            statement.setString(4, user.getRole().toString());
-            statement.setString(5, user.getPassword());
-            statement.setLong(6, user.getId());
-            logger.debug("Database access.");
-            statement.executeUpdate();
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return getUserById(generatedKeys.getLong("id"));
-            } else {
-                throw new RuntimeException("Something went wrong... ");
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
+        Map<String, Object> params = new HashMap<>();
+        params.put("first_name", user.getFirstName());
+        params.put("last_name", user.getLastName());
+        params.put("email", user.getEmail());
+        params.put("role", user.getRole().toString().toLowerCase());
+        params.put("password", user.getPassword());
+        SqlParameterSource source = new MapSqlParameterSource(params);
+        int rowsUpdated = template.update(INSERT_USER, source);
+        if (rowsUpdated != 1) {
+            throw new RuntimeException("Can't update user!" + user);
         }
-        throw new RuntimeException("Something went wrong... ");
+        return getUserById(user.getId());
     }
 
     @Override
     public boolean deleteUser(Long id) {
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(DELETE_USER);
-            statement.setLong(1, id);
-            logger.debug("Database access.");
-            int result = statement.executeUpdate();
-            return result == 1;
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        throw new RuntimeException("Something went wrong... ");
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return template.update(DELETE_USER, params) == 1;
     }
 
     @Override
     public int countAllUsers() {
-        int counter = 0;
-        try {
-            Statement statement = DbConfigurator.getConnection().createStatement();
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery(COUNT_ALL_USERS);
-            if (resultSet.next()) {
-                counter = resultSet.getInt("count");
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return counter;
+        return template.getJdbcOperations().update(COUNT_ALL_USERS);
     }
 }

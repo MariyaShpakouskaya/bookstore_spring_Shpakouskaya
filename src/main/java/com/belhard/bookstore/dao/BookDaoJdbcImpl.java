@@ -1,197 +1,114 @@
 package com.belhard.bookstore.dao;
 
-import com.belhard.bookstore.connection.DbConfigurator;
 import com.belhard.bookstore.dao.entity.Book;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-@Component("bookDao")
+@Repository("bookDao")
 public class BookDaoJdbcImpl implements BookDao {
 
     public static final String GET_ALL = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id";
-    public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id = ? AND deleted = false";
-    public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn = ? AND deleted = false";
-    public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author = ? AND deleted = false";
-    public static final String INSERT = "INSERT INTO books (isbn, author, title, cover_id, price) VALUES (?,?,?,(SELECT id FROM covers WHERE name = ?), ?)";
-    public static final String UPDATE = "UPDATE books SET isbn = ?, author = ?, title = ?, price = ?, cover_id = (SELECT id FROM covers WHERE name = ?) WHERE id = ? AND deleted = false";
-    public static final String DELETE = "UPDATE books SET deleted = true WHERE id = ? AND deleted = false";
+    public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id = :id AND deleted = false";
+    public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn = :isbn AND deleted = false";
+    public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author = :author AND deleted = false";
+    public static final String INSERT = "INSERT INTO books (isbn, author, title, cover_id, price) VALUES (:isbn, :author, :title, (SELECT id FROM covers WHERE name = :cover), :price)";
+    public static final String UPDATE = "UPDATE books SET isbn = :isbn, author = :author, title = :title, price = :price, cover_id = (SELECT id FROM covers WHERE name = :cover) WHERE id = :id AND deleted = false";
+    public static final String DELETE = "UPDATE books SET deleted = true WHERE id = :id AND deleted = false";
     public static final String COUNT_ALL = "SELECT COUNT(*) FROM books";
     static Logger logger = LogManager.getLogger();
 
+    private final NamedParameterJdbcTemplate template;
+    private final BookRowMapper rowMapper;
+
+    @Autowired
+    public BookDaoJdbcImpl(NamedParameterJdbcTemplate template, BookRowMapper rowMapper) {
+        this.template = template;
+        this.rowMapper = rowMapper;
+    }
 
     @Override
     public List<Book> getAllBooks() {
-        List<Book> books = new ArrayList<>();
-        try {
-            Statement statement = DbConfigurator.getConnection().createStatement();
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery(GET_ALL);
-            while (resultSet.next()) {
-                Book book = processResultSet(resultSet);
-                books.add(book);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return books;
-    }
-
-    private Book processResultSet(ResultSet resultSet) throws SQLException {
-        Book book = new Book();
-        book.setId(resultSet.getLong("id"));
-        book.setIsbn(resultSet.getString("isbn"));
-        book.setAuthor(resultSet.getString("author"));
-        book.setTitle(resultSet.getString("title"));
-        book.setPrice(resultSet.getBigDecimal("price"));
-        book.setCover(Book.Cover.valueOf(resultSet.getString("cover")));
-        return book;
+        return template.query(GET_ALL, rowMapper);
     }
 
     @Override
     public Book getBookById(Long id) {
-        Book book = null;
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_ID);
-            statement.setLong(1, id);
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                book = processResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return book;
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return template.queryForObject(GET_BY_ID, params, rowMapper);
     }
+
 
     @Override
     public Book getBookByIsbn(String isbn) {
-        Book book = null;
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_ISBN);
-            statement.setString(1, isbn);
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                book = processResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return book;
+        Map<String, Object> params = new HashMap<>();
+        params.put("isbn", isbn);
+        return template.queryForObject(GET_BY_ISBN, params, rowMapper);
     }
 
     @Override
     public List<Book> getBooksByAuthor(String author) {
-        List<Book> books = new ArrayList<>();
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(GET_BY_AUTHOR);
-            statement.setString(1, author);
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Book book = processResultSet(resultSet);
-                books.add(book);
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return books;
+        Map<String, Object> params = new HashMap<>();
+        params.put("author", author);
+        return template.query(GET_BY_AUTHOR, params, rowMapper);
     }
 
     @Override
     public Book createBook(Book book) {
-        try {
-            Connection connection = DbConfigurator.getConnection();
-            PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, book.getIsbn());
-            statement.setString(2, book.getAuthor());
-            statement.setString(3, book.getTitle());
-            statement.setString(4, book.getCover().toString());
-            statement.setBigDecimal(5, book.getPrice());
-            logger.debug("Database access.");
-            statement.executeUpdate();
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return getBookById(generatedKeys.getLong("id"));
-            } else {
-                throw new RuntimeException("Something went wrong... ");
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        Map<String, Object> params = new HashMap<>();
+        params.put("isbn", book.getIsbn());
+        params.put("author", book.getAuthor());
+        params.put("title", book.getTitle());
+        params.put("cover", book.getCover().toString().toLowerCase());
+        params.put("price", book.getPrice());
+        SqlParameterSource source = new MapSqlParameterSource(params);
+        int rowsUpdated = template.update(INSERT, source, keyHolder, new String[]{"id"});
+        if (rowsUpdated != 1) {
+            throw new RuntimeException("Can't create book!" + book);
         }
-        throw new RuntimeException("...");
+        Long id = Optional.ofNullable(keyHolder.getKey()).map(Number::longValue)
+                .orElseThrow(() -> new RuntimeException("Can't create book!"));
+        return getBookById(id);
     }
 
     @Override
     public Book updateBook(Book book) {
-        try {
-            Connection connection = DbConfigurator.getConnection();
-            PreparedStatement statement = connection.prepareStatement(UPDATE, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, book.getIsbn());
-            statement.setString(2, book.getAuthor());
-            statement.setString(3, book.getTitle());
-            statement.setBigDecimal(4, book.getPrice());
-            statement.setString(5, book.getCover().toString());
-            statement.setLong(6, book.getId());
-            logger.debug("Database access.");
-            statement.executeUpdate();
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                return getBookById(generatedKeys.getLong("id"));
-            } else {
-                throw new RuntimeException("Something went wrong... ");
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
+        Map<String, Object> params = new HashMap<>();
+        params.put("isbn", book.getIsbn());
+        params.put("author", book.getAuthor());
+        params.put("title", book.getTitle());
+        params.put("cover", book.getCover().toString().toLowerCase());
+        params.put("price", book.getPrice());
+        SqlParameterSource source = new MapSqlParameterSource(params);
+        int rowsUpdated = template.update(UPDATE, source);
+        if (rowsUpdated != 1) {
+            throw new RuntimeException("Can't update book!" + book);
         }
-        throw new RuntimeException("...");
+        return getBookById(book.getId());
     }
 
     @Override
     public boolean deleteBook(Long id) {
-        try {
-            PreparedStatement statement = DbConfigurator.getConnection().prepareStatement(DELETE);
-            statement.setLong(1, id);
-            logger.debug("Database access.");
-            int result = statement.executeUpdate();
-            return result == 1;
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        throw new RuntimeException("...");
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return template.update(DELETE, params) == 1;
     }
 
     @Override
     public int countAllBooks() {
-        int counter = 0;
-        try {
-            Statement statement = DbConfigurator.getConnection().createStatement();
-            logger.debug("Database access.");
-            ResultSet resultSet = statement.executeQuery(COUNT_ALL);
-            if (resultSet.next()) {
-                counter = resultSet.getInt("count");
-            }
-        } catch (SQLException e) {
-//            e.printStackTrace();
-            logger.error("Error: the request failed.");
-        }
-        return counter;
+        return template.getJdbcOperations().update(COUNT_ALL);
     }
 }
