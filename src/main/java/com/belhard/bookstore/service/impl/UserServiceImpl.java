@@ -1,7 +1,8 @@
-package com.belhard.bookstore.service;
+package com.belhard.bookstore.service.impl;
 
 import com.belhard.bookstore.dao.UserDao;
 import com.belhard.bookstore.dao.entity.User;
+import com.belhard.bookstore.service.UserService;
 import com.belhard.bookstore.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

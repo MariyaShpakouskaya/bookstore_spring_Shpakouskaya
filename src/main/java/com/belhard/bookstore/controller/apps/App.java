@@ -1,7 +1,7 @@
 package com.belhard.bookstore.controller.apps;
 
 import com.belhard.bookstore.service.BookService;
-import com.belhard.bookstore.service.BookServiceImpl;
+import com.belhard.bookstore.service.impl.BookServiceImpl;
 import com.belhard.bookstore.service.dto.BookDto;
 import com.belhard.bookstore.util.ConsoleReader;
 import com.belhard.bookstore.util.PrintUtil;

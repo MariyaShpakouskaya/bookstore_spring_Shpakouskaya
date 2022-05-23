@@ -1,5 +1,7 @@
-package com.belhard.bookstore.dao;
+package com.belhard.bookstore.dao.impl;
 
+import com.belhard.bookstore.dao.UserDao;
+import com.belhard.bookstore.dao.UserRowMapper;
 import com.belhard.bookstore.dao.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
