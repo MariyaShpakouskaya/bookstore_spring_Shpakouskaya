@@ -14,6 +14,12 @@
 #Idea, Maven
 out/
 .idea/
-target/
 *.iml
 *.ini
+*.iws
+*.ipr
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
