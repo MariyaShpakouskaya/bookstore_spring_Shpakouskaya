@@ -25,7 +25,6 @@ public class Order {
         CREATED,
         PROCESSED,
         COMPLETED,
-        CANCELED
     }
 
     public Long getId() {

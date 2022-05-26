@@ -1,8 +1,8 @@
 package com.belhard.bookstore.dao.impl;
 
 import com.belhard.bookstore.dao.OrderDao;
-import com.belhard.bookstore.dao.mapper.OrderRowMapper;
 import com.belhard.bookstore.dao.entity.Order;
+import com.belhard.bookstore.dao.mapper.OrderRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -19,8 +19,8 @@ import java.util.Optional;
 @Repository("orderDao")
 public class OrderDaoImpl implements OrderDao {
 
-    public static final String GET_ALL = "SELECT o.id, o.user_id, o.timestamp, o.totalCost, s.status AS status FROM orders o JOIN status s ON o.status_id = s.id";
-    public static final String GET_BY_ID = "SELECT o.id, o.user_id, o.timestamp, o.totalCost, s.status AS status FROM orders o JOIN status s ON o.status_id = s.id WHERE s.id = :id AND deleted = false";
+    public static final String GET_ALL = "SELECT o.id, o.user_id, o.timestamp, o.totalCost, s.name AS status FROM orders o JOIN status s ON o.status_id = s.id";
+    public static final String GET_BY_ID = "SELECT o.id, o.user_id, o.timestamp, o.totalCost, s.name AS status FROM orders o JOIN status s ON o.status_id = s.id WHERE s.id = :id AND deleted = false";
     public static final String INSERT = "INSERT INTO orders (user_id, timestamp, totalCost, status_id) VALUES (:user_id, :timestamp, :totalCost, (SELECT id FROM orders WHERE name = :status))";
     public static final String UPDATE = "UPDATE orders SET user_id = :user_id, timestamp = :timestamp, totalCost = :totalCost, status_id = (SELECT id FROM orders WHERE name = :status) WHERE id = :id AND deleted = false";
     public static final String DELETE = "UPDATE orders SET deleted = true WHERE id = :id AND deleted = false";
