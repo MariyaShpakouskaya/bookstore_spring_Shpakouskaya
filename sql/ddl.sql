@@ -3,6 +3,9 @@ DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS covers;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS items_order;
+DROP TABLE IF EXISTS status;
 */
 
 CREATE TABLE IF NOT EXISTS covers (
@@ -34,3 +37,26 @@ CREATE TABLE IF NOT EXISTS users (
 	role_id BIGINT REFERENCES roles,
 	deleted BOOLEAN DEFAULT false NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS status (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50)
+    );
+
+CREATE TABLE IF NOT EXISTS orders (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES users,
+    totalCost DECIMAL(8,2) DEFAULT 0.0 NOT NULL,
+    timestamp DATE NOT NULL,
+    status_id BIGINT REFERENCES status,
+    deleted BOOLEAN DEFAULT false NOT NULL
+    );
+
+CREATE TABLE IF NOT EXISTS items_order (
+    id BIGSERIAL PRIMARY KEY,
+    order_id BIGINT REFERENCES orders,
+    book_id BIGINT REFERENCES books,
+    quantity DECIMAL(2) NOT NULL,
+    price DECIMAL(8,2) DEFAULT 0.0 NOT NULL,
+    deleted BOOLEAN DEFAULT false NOT NULL
+    );
