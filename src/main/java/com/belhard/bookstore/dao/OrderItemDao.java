@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface OrderItemDao {
 
-    OrderItemDao getById(Long id);
+    OrderItem getById(Long id);
 
     List<OrderItem> getAll();
 

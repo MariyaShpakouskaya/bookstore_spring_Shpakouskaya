@@ -1,16 +1,18 @@
 package com.belhard.bookstore.dao;
 
+import com.belhard.bookstore.dao.entity.Order;
+
 import java.util.List;
 
 public interface OrderDao {
 
-    OrderDao getById(Long id);
+    Order getById(Long id);
 
-    List<OrderDao> getAll();
+    List<Order> getAll();
 
-    OrderDao create(OrderDao orderDao);
+    Order create(Order order);
 
-    OrderDao update(OrderDao orderDao);
+    Order update(Order order);
 
     boolean delete(Long id);
 }
