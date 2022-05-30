@@ -1,11 +1,12 @@
 package com.belhard.bookstore.dao.impl;
 
 import com.belhard.bookstore.dao.UserDao;
-import com.belhard.bookstore.dao.mapper.UserRowMapper;
 import com.belhard.bookstore.dao.entity.User;
+import com.belhard.bookstore.dao.mapper.UserRowMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Repository("userDao")
 public class UserDaoJdbcImpl implements UserDao {
 
-    public static final String GET_ALL_USERS = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id";
+    public static final String GET_ALL_USERS = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id AND deleted = false";
     public static final String GET_BY_USER_ID = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id= :id AND deleted = false";
     public static final String GET_BY_USER_LASTNAME = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.last_name = :last_name AND deleted = false";
     public static final String GET_BY_USER_EMAIL = "SELECT u.id, u.first_name, u.last_name, u.email, u.password, r.name AS role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.email = :email AND deleted = false";
@@ -48,7 +49,11 @@ public class UserDaoJdbcImpl implements UserDao {
     public User getUserById(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-        return template.queryForObject(GET_BY_USER_ID, params, rowMapper);
+        try {
+            return template.queryForObject(GET_BY_USER_ID, params, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
@@ -72,7 +77,7 @@ public class UserDaoJdbcImpl implements UserDao {
         params.put("first_name", user.getFirstName());
         params.put("last_name", user.getLastName());
         params.put("email", user.getEmail());
-        params.put("role", user.getRole().toString().toLowerCase());
+        params.put("role", user.getRole().toString().toUpperCase());
         params.put("password", user.getPassword());
         SqlParameterSource source = new MapSqlParameterSource(params);
         int rowsUpdated = template.update(INSERT_USER, source, keyHolder, new String[]{"id"});
@@ -87,13 +92,14 @@ public class UserDaoJdbcImpl implements UserDao {
     @Override
     public User updateUser(User user) {
         Map<String, Object> params = new HashMap<>();
+        params.put("id", user.getId());
         params.put("first_name", user.getFirstName());
         params.put("last_name", user.getLastName());
         params.put("email", user.getEmail());
-        params.put("role", user.getRole().toString().toLowerCase());
+        params.put("role", user.getRole().toString().toUpperCase());
         params.put("password", user.getPassword());
         SqlParameterSource source = new MapSqlParameterSource(params);
-        int rowsUpdated = template.update(INSERT_USER, source);
+        int rowsUpdated = template.update(UPDATE_USER, source);
         if (rowsUpdated != 1) {
             throw new RuntimeException("Can't update user!" + user);
         }
