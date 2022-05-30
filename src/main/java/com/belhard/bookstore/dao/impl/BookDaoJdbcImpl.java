@@ -94,6 +94,7 @@ public class BookDaoJdbcImpl implements BookDao {
     @Override
     public Book updateBook(Book book) {
         Map<String, Object> params = new HashMap<>();
+        params.put("id", book.getId());
         params.put("isbn", book.getIsbn());
         params.put("author", book.getAuthor());
         params.put("title", book.getTitle());

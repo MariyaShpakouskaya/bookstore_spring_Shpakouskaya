@@ -65,6 +65,7 @@ public class BookController {
     @PostMapping("/{id}")
     public String update(Model model, @PathVariable Long id, @RequestParam Map<String, Object> params) {
         BookDto bookDto = bookService.getBookById(id);
+        bookDto.setId(id);
         bookDto.setIsbn(params.get("isbn").toString());
         bookDto.setAuthor(params.get("author").toString());
         bookDto.setTitle(params.get("title").toString());

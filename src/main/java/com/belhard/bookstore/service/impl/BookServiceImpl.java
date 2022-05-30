@@ -84,7 +84,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto updateBook(BookDto bookDto) {
-        Book book = bookDao.getBookByIsbn(bookDto.getIsbn());
+        Book book = bookDao.getBookById(bookDto.getId());
         if (book != null && !Objects.equals(book.getId(), bookDto.getId())) {
             throw new RuntimeException("You can't update this book");
         }
