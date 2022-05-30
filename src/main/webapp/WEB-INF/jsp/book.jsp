@@ -12,5 +12,16 @@
         <div>${book.cover.toString().toLowerCase()} cover</div>
         <div>ISBN = ${book.isbn}</div>
         <div>Price = ${book.price} byn</div>
+        <br/>
+        <td>
+            <form action="/books/edit/${book.id}" method="get">
+                <input type="submit" value="Edit"/>
+            </form>
+        </td>
+        <td>
+            <form action="/books/delete/${book.id}" method="post">
+                <input type="submit" value="Delete"/>
+            </form>
+        </td>
     </body>
 </html>
