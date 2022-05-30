@@ -8,9 +8,8 @@
 <form action="/books/delete/${book.id}" method="post">
     <h1>It was successfully deleted</h1>
     <div>${message}</div>
+    <br/>
     <ul>
-        <li><a href="/books">All books</a></li>
-        <br/>
         <li><a href="/">Main</a></li>
     </ul>
 </form>

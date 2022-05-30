@@ -17,9 +17,7 @@
                 <th>id</th>
                 <th>First name</th>
                 <th>Last name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Password</th>
+                <th>View</th>
             </tr>
             <c:forEach items="${users}" var="user" varStatus="counter">
                 <tr>
@@ -29,11 +27,19 @@
                     <td>${user.id}</td>
                     <td>${user.firstName}</td>
                     <td>${user.lastName}</td>
-                    <td>${user.email}</td>
-                    <td>${user.role.toString().toLowerCase()}</td>
-                    <td>${user.password}</td>
+                    <td>
+                        <form action="/users/${user.id}" method="get">
+                            <input type="submit" value="View"/>
+                        </form>
+                    </td>
                 </tr>
             </c:forEach>
         </table>
+        <br/>
+        <ul>
+            <li>
+                <a href="/">Main</a>
+            </li>
+        </ul>
     </body>
 </html>

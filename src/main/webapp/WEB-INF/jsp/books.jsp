@@ -36,5 +36,11 @@
                 </tr>
             </c:forEach>
         </table>
+        <br/>
+        <ul>
+            <li>
+                <a href="/">Main</a>
+            </li>
+        </ul>
     </body>
 </html>

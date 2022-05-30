@@ -13,6 +13,7 @@
         <div>ISBN = ${book.isbn}</div>
         <div>Price = ${book.price} byn</div>
         <br/>
+        <br/>
         <td>
             <form action="/books/edit/${book.id}" method="get">
                 <input type="submit" value="Edit"/>
@@ -23,5 +24,17 @@
                 <input type="submit" value="Delete"/>
             </form>
         </td>
+        <br/>
+        <br/>
+        <ul>
+            <li>
+                <a href="/books">All books</a>
+            </li>
+            <br/>
+            <br/>
+            <li>
+                <a href="/">Main</a>
+            </li>
+        </ul>
     </body>
 </html>

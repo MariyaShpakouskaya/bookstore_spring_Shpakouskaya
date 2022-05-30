@@ -7,5 +7,13 @@
     <body>
         <h1>Error</h1>
         <div>This page is not exist!</div>
+        <ul>
+            <li>
+                <br/>
+                <br/>
+                <br/>
+                <a href="/">Go to Main</a>
+            </li>
+        </ul>
     </body>
 </html>

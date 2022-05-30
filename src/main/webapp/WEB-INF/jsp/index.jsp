@@ -7,8 +7,10 @@
 <body>
 <h1>Welcome to bookstore</h1>
 <div>This is an application for Java Professional Training Course</div>
+<br/>
 <ul>
     <li><a href="/books">All books</a></li>
+    <br/>
     <li><a href="/users">All users</a></li>
 </ul>
 </body>

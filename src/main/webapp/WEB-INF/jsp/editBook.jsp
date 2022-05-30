@@ -6,7 +6,6 @@
 </head>
 <body>
 <form action="/books/${book.id}" method="post">
-    <input name="id" type="hidden" value="${book.id}">
     <label for="isbn">ISBN: </label>
     <input id="isbn" name="isbn" type="text" value="${book.isbn}"/>
     <br/>
