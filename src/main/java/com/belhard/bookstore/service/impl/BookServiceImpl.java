@@ -35,7 +35,7 @@ public class BookServiceImpl implements BookService {
         bookDto.setAuthor(book.getAuthor());
         bookDto.setTitle(book.getTitle());
         bookDto.setPrice(book.getPrice());
-        bookDto.setCover(BookDto.Cover.valueOf(book.getCover().toString()));
+        bookDto.setCover(BookDto.Cover.valueOf(book.getCover().toString().toUpperCase()));
         return bookDto;
     }
 
@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
         book.setAuthor(bookDto.getAuthor());
         book.setTitle(bookDto.getTitle());
         book.setPrice(bookDto.getPrice());
-        book.setCover(Book.Cover.valueOf(bookDto.getCover().toString()));
+        book.setCover(Book.Cover.valueOf(bookDto.getCover().toString().toUpperCase()));
         return book;
     }
 
@@ -68,13 +68,13 @@ public class BookServiceImpl implements BookService {
             return bookToBookDto(book);
         } catch (NullPointerException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     @Override
     public BookDto createBook(BookDto bookDto) {
-        Book existing = bookDao.getBookByIsbn(bookDto.getIsbn());
+        Book existing = bookDao.getBookById(bookDto.getId());
         if (existing != null) {
             throw new RuntimeException("This book is already exist!");
         }

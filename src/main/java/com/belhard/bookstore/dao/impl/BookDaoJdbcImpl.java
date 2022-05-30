@@ -1,11 +1,12 @@
 package com.belhard.bookstore.dao.impl;
 
 import com.belhard.bookstore.dao.BookDao;
-import com.belhard.bookstore.dao.mapper.BookRowMapper;
 import com.belhard.bookstore.dao.entity.Book;
+import com.belhard.bookstore.dao.mapper.BookRowMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Repository("bookDao")
 public class BookDaoJdbcImpl implements BookDao {
 
-    public static final String GET_ALL = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id";
+    public static final String GET_ALL = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id AND deleted = false";
     public static final String GET_BY_ID = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.id = :id AND deleted = false";
     public static final String GET_BY_ISBN = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.isbn = :isbn AND deleted = false";
     public static final String GET_BY_AUTHOR = "SELECT b.id, b.isbn, b.author, b.title, b.price, c.name AS cover FROM books b JOIN covers c ON b.cover_id = c.id WHERE b.author = :author AND deleted = false";
@@ -49,7 +50,11 @@ public class BookDaoJdbcImpl implements BookDao {
     public Book getBookById(Long id) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-        return template.queryForObject(GET_BY_ID, params, rowMapper);
+        try {
+            return template.queryForObject(GET_BY_ID, params, rowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 
@@ -74,7 +79,7 @@ public class BookDaoJdbcImpl implements BookDao {
         params.put("isbn", book.getIsbn());
         params.put("author", book.getAuthor());
         params.put("title", book.getTitle());
-        params.put("cover", book.getCover().toString().toLowerCase());
+        params.put("cover", book.getCover().toString().toUpperCase());
         params.put("price", book.getPrice());
         SqlParameterSource source = new MapSqlParameterSource(params);
         int rowsUpdated = template.update(INSERT, source, keyHolder, new String[]{"id"});
@@ -92,7 +97,7 @@ public class BookDaoJdbcImpl implements BookDao {
         params.put("isbn", book.getIsbn());
         params.put("author", book.getAuthor());
         params.put("title", book.getTitle());
-        params.put("cover", book.getCover().toString().toLowerCase());
+        params.put("cover", book.getCover().toString().toUpperCase());
         params.put("price", book.getPrice());
         SqlParameterSource source = new MapSqlParameterSource(params);
         int rowsUpdated = template.update(UPDATE, source);
