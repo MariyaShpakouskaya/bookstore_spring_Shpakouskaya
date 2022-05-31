@@ -10,6 +10,7 @@ public class BookDto {
     private String title;
     private Cover cover;
     private BigDecimal price;
+    private boolean deleted = false;
 
     public BookDto() {
     }
@@ -23,6 +24,7 @@ public class BookDto {
     }
 
     public enum Cover {
+        NO_COVER,
         SOFT,
         HARD,
         SPECIAL
@@ -81,12 +83,12 @@ public class BookDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookDto bookDto = (BookDto) o;
-        return Objects.equals(id, bookDto.id) && Objects.equals(isbn, bookDto.isbn) && Objects.equals(author, bookDto.author) && Objects.equals(title, bookDto.title) && cover == bookDto.cover && Objects.equals(price, bookDto.price);
+        return deleted == bookDto.deleted && Objects.equals(id, bookDto.id) && Objects.equals(isbn, bookDto.isbn) && Objects.equals(author, bookDto.author) && Objects.equals(title, bookDto.title) && cover == bookDto.cover && Objects.equals(price, bookDto.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, isbn, author, title, cover, price);
+        return Objects.hash(id, isbn, author, title, cover, price, deleted);
     }
 
     @Override

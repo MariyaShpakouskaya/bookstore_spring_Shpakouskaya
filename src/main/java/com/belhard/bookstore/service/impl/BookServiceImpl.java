@@ -74,10 +74,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto createBook(BookDto bookDto) {
-        Book existing = bookDao.getBookById(bookDto.getId());
-        if (existing != null) {
-            throw new RuntimeException("This book is already exist!");
-        }
         Book bookToCreate = bookDtoToBook(bookDto);
         return bookToBookDto(bookDao.createBook(bookToCreate));
     }
@@ -97,5 +93,10 @@ public class BookServiceImpl implements BookService {
         if (!bookDao.deleteBook(id)) {
             throw new RuntimeException("This book didn't deleted!");
         }
+    }
+
+    @Override
+    public void countAllBooks() {
+        System.out.println("Count of all books is " + bookDao.countAllBooks());
     }
 }
