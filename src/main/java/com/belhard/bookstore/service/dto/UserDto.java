@@ -23,6 +23,7 @@ public class UserDto {
     }
 
     public enum Role {
+        NO_ROLE,
         ADMIN,
         MANAGER,
         CUSTOMER

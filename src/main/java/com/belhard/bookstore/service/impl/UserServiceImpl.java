@@ -85,10 +85,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User existing = userDao.getUserById(userDto.getId());
-        if (existing != null) {
-            throw new RuntimeException("This user is already exist!");
-        }
         User userToCreate = userDtoToUser(userDto);
         return userToUserDto(userDao.createUser(userToCreate));
     }
