@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@Transactional
 public class BookDaoJdbcImpl implements BookDao {
 
+    public static final String GET_ALL = "from Book where deleted = false";
+    public static final String GET_ALL_BY_AUTHOR = "from Book where author = ?";
     @PersistenceContext
     private final EntityManager manager;
 
@@ -22,15 +25,13 @@ public class BookDaoJdbcImpl implements BookDao {
 
     @Override
     public List<Book> getAllBooks() {
-        List<Book> books = manager.createQuery("from Book", Book.class).getResultList();
-        manager.clear();
+        List<Book> books = manager.createQuery(GET_ALL, Book.class).getResultList();
         return books;
     }
 
     @Override
     public Book getBookById(Long id) {
         Book book = manager.find(Book.class, id);
-        manager.clear();
         return book;
     }
 
@@ -38,44 +39,34 @@ public class BookDaoJdbcImpl implements BookDao {
     @Override
     public Book getBookByIsbn(String isbn) {
         Book book = manager.find(Book.class, isbn);
-        manager.clear();
         return book;
     }
 
     @Override
     public List<Book> getBooksByAuthor(String author) {
-        List<Book> books = new ArrayList<>();
-        for (Book book : books) {
-            book = manager.find(Book.class, author);
-            books.add(book);
-        }
+        List<Book> books = manager.createQuery(GET_ALL_BY_AUTHOR, Book.class).getResultList();
         return books;
     }
 
-    @Transactional
     @Override
     public Book createBook(Book book) {
         manager.persist(book);
-        manager.clear();
         return book;
     }
 
-    @Transactional
     @Override
     public Book updateBook(Book book) {
         manager.merge(book);
-        manager.flush();
-        manager.clear();
         return book;
     }
 
-    @Transactional
     @Override
     public boolean deleteBook(Long id) {
         Book managed = manager.find(Book.class, id);
         boolean success = false;
         if (managed != null) {
-            manager.remove(managed);
+            managed.setDeleted(true);
+            manager.merge(managed);
             success = true;
         }
         return success;
