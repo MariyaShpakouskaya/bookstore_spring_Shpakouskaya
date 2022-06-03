@@ -28,7 +28,7 @@ public class BookServiceImpl implements BookService {
         this.bookDao = bookDao;
     }
 
-    private BookDto bookToBookDto(Book book) {
+    public BookDto bookToBookDto(Book book) {
         BookDto bookDto = new BookDto();
         bookDto.setId(book.getId());
         bookDto.setIsbn(book.getIsbn());
@@ -39,7 +39,7 @@ public class BookServiceImpl implements BookService {
         return bookDto;
     }
 
-    private Book bookDtoToBook(BookDto bookDto) {
+    public Book bookDtoToBook(BookDto bookDto) {
         Book book = new Book();
         book.setId(bookDto.getId());
         book.setIsbn(bookDto.getIsbn());

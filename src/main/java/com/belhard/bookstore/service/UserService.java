@@ -1,5 +1,6 @@
 package com.belhard.bookstore.service;
 
+import com.belhard.bookstore.dao.entity.User;
 import com.belhard.bookstore.service.dto.UserDto;
 
 import java.util.List;
@@ -21,4 +22,9 @@ public interface UserService {
     void deleteUser(Long id);
 
     void countAllUsers();
+
+    UserDto userToUserDto(User user);
+
+    User userDtoToUser(UserDto userDto);
+
 }

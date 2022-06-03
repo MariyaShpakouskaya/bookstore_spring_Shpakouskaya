@@ -18,14 +18,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "first_name", nullable = true, length = 100)
     private String firstName;
+
     @Column(name = "last_name", nullable = true, length = 100)
     private String lastName;
+
     @Column(name = "email", nullable = true, length = 100)
     private String email;
+
     @Column(name = "password", nullable = true, length = 100)
     private String password;
+
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "role_id")
     private Role role;

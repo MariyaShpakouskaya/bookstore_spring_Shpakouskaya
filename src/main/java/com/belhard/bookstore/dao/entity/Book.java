@@ -13,19 +13,25 @@ import java.util.Objects;
 @Entity
 @Table(name = "books")
 public class Book {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "isbn", nullable = true, length = 50, unique = true)
     private String isbn;
+
     @Column(name = "author", nullable = true, length = 100)
     private String author;
+
     @Column(name = "title", nullable = true, length = 100)
     private String title;
+
     @Enumerated
     @Column(name = "cover_id")
     private Cover cover;
+
     @Column(name = "price", columnDefinition = "decimal(8,2) default 0.0", nullable = true)
     private BigDecimal price;
 

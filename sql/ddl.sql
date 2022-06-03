@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS orders (
     deleted BOOLEAN DEFAULT false NOT NULL
     );
 
-CREATE TABLE IF NOT EXISTS items_order (
+CREATE TABLE IF NOT EXISTS order_items (
     id BIGSERIAL PRIMARY KEY,
     order_id BIGINT REFERENCES orders,
     book_id BIGINT REFERENCES books,
