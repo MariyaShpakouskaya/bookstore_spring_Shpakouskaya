@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
     }
 
-    private UserDto userToUserDto(User user) {
+    public UserDto userToUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setFirstName(user.getFirstName());
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    private User userDtoToUser(UserDto userDto) {
+    public User userDtoToUser(UserDto userDto) {
         User user = new User();
         user.setId(userDto.getId());
         user.setFirstName(userDto.getFirstName());
@@ -85,10 +85,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User existing = userDao.getUserById(userDto.getId());
-        if (existing != null) {
-            throw new RuntimeException("This user is already exist!");
-        }
         User userToCreate = userDtoToUser(userDto);
         return userToUserDto(userDao.createUser(userToCreate));
     }

@@ -71,19 +71,19 @@ VALUES ('Maryia', 'Fedorova', 'cooking@mail.ru', 'Qwerty1', (SELECT id FROM role
         (SELECT id FROM roles WHERE name = 'CUSTOMER'));
 
 INSERT INTO orders(user_id, totalCost, timestamp, status_id)
-VALUES ((SELECT id FROM users WHERE email = 'NikitaKol85@mail.ru'), (SELECT price FROM items_order), '2022-05-26',
+VALUES ((SELECT id FROM users WHERE email = 'NikitaKol85@mail.ru'), (SELECT price FROM order_items), '2022-05-26',
         (SELECT id FROM status WHERE name = 'COMPLETED')),
-       ((SELECT id FROM users WHERE email = 'gladeTwo@gmail.com'), (SELECT price FROM items_order), '2022-05-23',
+       ((SELECT id FROM users WHERE email = 'gladeTwo@gmail.com'), (SELECT price FROM order_items), '2022-05-23',
         (SELECT id FROM status WHERE name = 'CREATED')),
-       ((SELECT id FROM users WHERE email = 'Ti_12_52@mail.ru'), (SELECT price FROM items_order), '2022-05-22',
+       ((SELECT id FROM users WHERE email = 'Ti_12_52@mail.ru'), (SELECT price FROM order_items), '2022-05-22',
         (SELECT id FROM status WHERE name = 'PROCESSED')),
-       ((SELECT id FROM users WHERE email = 'Pabloking@mail.ru'), (SELECT price FROM items_order), '2022-04-26',
+       ((SELECT id FROM users WHERE email = 'Pabloking@mail.ru'), (SELECT price FROM order_items), '2022-04-26',
         (SELECT id FROM status WHERE name = 'PROCESSED')),
-       ((SELECT id FROM users WHERE email = 'filePloy@mail.ru'), (SELECT price FROM items_order), '2022-04-25',
+       ((SELECT id FROM users WHERE email = 'filePloy@mail.ru'), (SELECT price FROM order_items), '2022-04-25',
         (SELECT id FROM status WHERE name = 'PROCESSED'));
 
 
-INSERT INTO items_order(order_id, book_id, quantity, price)
+INSERT INTO order_items(order_id, book_id, quantity, price)
 VALUES ('1', (SELECT id FROM books WHERE title = 'His other lover'), '1',
         (SELECT price FROM books WHERE title = 'His other lover')),
        ('1', (SELECT id FROM books WHERE title = 'Women with men'), '1',
