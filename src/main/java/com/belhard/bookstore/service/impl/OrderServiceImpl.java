@@ -2,7 +2,6 @@ package com.belhard.bookstore.service.impl;
 
 import com.belhard.bookstore.dao.OrderDao;
 import com.belhard.bookstore.dao.OrderItemDao;
-import com.belhard.bookstore.dao.entity.Book;
 import com.belhard.bookstore.dao.entity.Order;
 import com.belhard.bookstore.dao.entity.OrderItem;
 import com.belhard.bookstore.dao.entity.User;
@@ -16,6 +15,7 @@ import com.belhard.bookstore.service.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("orderService")
@@ -98,6 +98,11 @@ public class OrderServiceImpl implements OrderService {
         entity.setStatus(Order.Status.valueOf(orderDto.getStatus().toString()));
         User user = userService.userDtoToUser(orderDto.getUserDto());
         entity.setUser(user);
+        List<OrderItemDto> orderItemDtos = orderDto.getOrderItemDtos();
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (OrderItemDto orderItemDto : orderItemDtos) {
+            orderItems.add(mapToItemEntity(orderDto.getId(), orderItemDto));
+        }
         return entity;
     }
 
@@ -106,8 +111,7 @@ public class OrderServiceImpl implements OrderService {
         orderItem.setId(orderItemDto.getId());
         orderItem.setQuantity(orderItemDto.getQuantity());
         orderItem.setPrice(orderItemDto.getPrice());
-        Book book = bookService.bookDtoToBook(orderItemDto.getBookDto());
-        orderItem.setBook(book);
+        orderItem.setBook(bookService.bookDtoToBook(orderItemDto.getBookDto()));
         return orderItem;
     }
 
