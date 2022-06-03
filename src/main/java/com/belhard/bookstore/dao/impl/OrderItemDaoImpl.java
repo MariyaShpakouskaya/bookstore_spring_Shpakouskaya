@@ -15,7 +15,7 @@ import java.util.List;
 public class OrderItemDaoImpl implements OrderItemDao {
 
     public static final String GET_ALL = "from OrderItem where deleted = false";
-    public static final String GET_ALL_BY_ORDER_ID = "from OrderItem where order_id = ?";
+    public static final String GET_ALL_BY_ORDER_ID = "from OrderItem where order_id = ?1";
 
     @PersistenceContext
     private EntityManager manager;
@@ -40,6 +40,7 @@ public class OrderItemDaoImpl implements OrderItemDao {
     @Override
     public List<OrderItem> getByOrderId(Long order_id) {
         List<OrderItem> orderItems = manager.createQuery(GET_ALL_BY_ORDER_ID).getResultList();
+//        List<OrderItem> orderItems = manager.createNativeQuery("SELECT * FROM order_items where order_id = :order_id").getResultList();
         return orderItems;
     }
 

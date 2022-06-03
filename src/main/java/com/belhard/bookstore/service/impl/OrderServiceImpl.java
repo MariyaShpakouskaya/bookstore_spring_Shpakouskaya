@@ -124,7 +124,10 @@ public class OrderServiceImpl implements OrderService {
         UserDto userDto = userService.userToUserDto(order.getUser());
         orderDto.setUserDto(userDto);
         List<OrderItem> orderItems = orderItemDao.getByOrderId(order.getId());
-        List<OrderItemDto> orderItemDtos = orderItems.stream().map(this::mapOrderItemToDto).toList();
+        List<OrderItemDto> orderItemDtos = new ArrayList<>();
+        for (OrderItem orderItem : orderItems) {
+            orderItemDtos.add(mapOrderItemToDto(orderItem));
+        }
         orderDto.setOrderItemDtos(orderItemDtos);
         return orderDto;
     }
