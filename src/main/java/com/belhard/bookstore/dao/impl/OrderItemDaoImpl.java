@@ -38,9 +38,9 @@ public class OrderItemDaoImpl implements OrderItemDao {
     }
 
     @Override
-    public List<OrderItem> getByOrderId(Long order_id) { //GET_ALL_BY_ORDER_ID = "from OrderItem where order_id = ?1"
-        List<OrderItem> orderItems = manager.createQuery(GET_ALL_BY_ORDER_ID, OrderItem.class).setParameter(1, order_id).getResultList();
-//        List<OrderItem> orderItems = manager.createNativeQuery("SELECT * FROM order_items where order_id = :order_id").getResultList();
+    public List<OrderItem> getByOrderId(Long order_id) {
+        List<OrderItem> orderItems = manager.createQuery(GET_ALL_BY_ORDER_ID, OrderItem.class)
+                .setParameter(1, order_id).getResultList();
         return orderItems;
     }
 
