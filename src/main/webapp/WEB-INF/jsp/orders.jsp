@@ -16,7 +16,7 @@
         <th>id</th>
         <th>User</th>
         <th>Total cost</th>
-        <th>View</th>
+        <th>Details</th>
     </tr>
     <c:forEach items="${orders}" var="order" varStatus="counter">
         <tr>
@@ -24,8 +24,8 @@
                 <td>${counter.count}</td>
             </c:if>
             <td>${order.id}</td>
-            <td>${order.userDto.getLastName()}</td>
-            <td>${order.totalCost}</td>
+            <td>${order.userDto.lastName} ${order.userDto.firstName}</td>
+            <td>${order.totalCost} byn</td>
             <td>
                 <form action="/orders/${order.id}" method="get">
                     <input type="submit" value="View"/>

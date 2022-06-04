@@ -2,6 +2,7 @@ package com.belhard.bookstore.controller;
 
 import com.belhard.bookstore.service.OrderService;
 import com.belhard.bookstore.service.dto.OrderDto;
+import com.belhard.bookstore.service.dto.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +33,9 @@ public class OrderController {
     @GetMapping("/{id}")
     public String getById(Model model, @PathVariable Long id) {
         OrderDto orderDto = orderService.getById(id);
+        List<OrderItemDto> orderItemDtos = orderDto.getOrderItemDtos();
         model.addAttribute("order", orderDto);
+        model.addAttribute("items", orderItemDtos);
         return "order";
     }
 }
