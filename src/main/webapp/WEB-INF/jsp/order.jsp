@@ -6,9 +6,9 @@
 </head>
 <body>
 <h1>Order, id=${order.id}</h1>
-<div>${order.user}</div>
+<div>${order.userDto.getLastName()}</div>
 <div>${order.status.toString().toLowerCase()} status</div>
-<div>ISBN = ${order.timestamp}</div>
+<div>Date: ${order.timestamp}</div>
 <div>Price = ${order.totalCost} byn</div>
 <br/>
 <br/>

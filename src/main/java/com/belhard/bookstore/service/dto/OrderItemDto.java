@@ -8,14 +8,16 @@ public class OrderItemDto {
     private BookDto bookDto;
     private Integer quantity;
     private BigDecimal price;
+    private Long orderId;
 
     public OrderItemDto() {
     }
 
-    public OrderItemDto(BookDto bookDto, Integer quantity, BigDecimal price) {
+    public OrderItemDto(BookDto bookDto, Integer quantity, BigDecimal price, Long orderId) {
         this.bookDto = bookDto;
         this.quantity = quantity;
         this.price = price;
+        this.orderId = orderId;
     }
 
     public Long getId() {
@@ -50,17 +52,25 @@ public class OrderItemDto {
         this.price = price;
     }
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderItemDto that = (OrderItemDto) o;
-        return Objects.equals(id, that.id) && Objects.equals(bookDto, that.bookDto) && Objects.equals(quantity, that.quantity) && Objects.equals(price, that.price);
+        return Objects.equals(id, that.id) && Objects.equals(bookDto, that.bookDto) && Objects.equals(quantity, that.quantity) && Objects.equals(price, that.price) && Objects.equals(orderId, that.orderId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookDto, quantity, price);
+        return Objects.hash(id, bookDto, quantity, price, orderId);
     }
 
     @Override

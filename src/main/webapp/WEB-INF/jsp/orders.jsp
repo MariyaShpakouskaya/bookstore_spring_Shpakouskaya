@@ -24,7 +24,7 @@
                 <td>${counter.count}</td>
             </c:if>
             <td>${order.id}</td>
-            <td>${user.id}</td>
+            <td>${order.userDto.getLastName()}</td>
             <td>${order.totalCost}</td>
             <td>
                 <form action="/orders/${order.id}" method="get">

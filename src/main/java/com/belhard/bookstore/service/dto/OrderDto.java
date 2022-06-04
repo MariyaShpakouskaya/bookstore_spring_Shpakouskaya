@@ -25,10 +25,10 @@ public class OrderDto {
     }
 
     public enum Status {
+        NOT_STATUS,
         CREATED,
         PROCESSED,
-        COMPLETED,
-        CANCELED
+        COMPLETED
     }
 
     public Long getId() {
