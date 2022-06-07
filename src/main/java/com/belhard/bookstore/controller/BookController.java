@@ -3,6 +3,9 @@ package com.belhard.bookstore.controller;
 import com.belhard.bookstore.service.BookService;
 import com.belhard.bookstore.service.dto.BookDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,8 +32,11 @@ public class BookController {
     }
 
     @GetMapping
-    public String getAllBooks(Model model) {
-        List<BookDto> bookDtos = bookService.getAllBooks();
+    public String getAllBooks(Model model, @RequestParam int page) {
+        int size = 10;
+        String sortColumn = "id";
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, sortColumn);
+        List<BookDto> bookDtos = bookService.getAllBooks(pageable);
         model.addAttribute("books", bookDtos);
         return "books";
     }

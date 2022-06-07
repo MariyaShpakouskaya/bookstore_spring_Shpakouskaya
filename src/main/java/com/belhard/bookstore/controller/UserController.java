@@ -1,8 +1,12 @@
 package com.belhard.bookstore.controller;
 
+import com.belhard.bookstore.dao.UserRepository;
 import com.belhard.bookstore.service.UserService;
 import com.belhard.bookstore.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,13 +26,16 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
     }
 
     @GetMapping
-    public String getAllUsers(Model model) {
-        List<UserDto> userDtos = userService.getAllUsers();
+    public String getAllUsers(Model model, @RequestParam int page) {
+        int size = 10;
+        String sortColumn = "id";
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, sortColumn);
+        List<UserDto> userDtos = userService.getAllUsers(pageable);
         model.addAttribute("users", userDtos);
         return "users";
     }

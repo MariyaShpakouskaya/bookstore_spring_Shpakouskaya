@@ -1,10 +1,12 @@
 package com.belhard.bookstore.service.impl;
 
-import com.belhard.bookstore.dao.BookDao;
+import com.belhard.bookstore.dao.BookRepository;
 import com.belhard.bookstore.dao.entity.Book;
 import com.belhard.bookstore.service.BookService;
 import com.belhard.bookstore.service.dto.BookDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,18 +16,18 @@ import java.util.Objects;
 @Service("bookService")
 public class BookServiceImpl implements BookService {
 
-    private BookDao bookDao;
+    private BookRepository bookRepository;
 
     public BookServiceImpl() {
     }
 
-    public BookServiceImpl(BookDao bookDao) {
-        this.bookDao = bookDao;
+    public BookServiceImpl(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
     }
 
     @Autowired
-    public void setBookDao(BookDao bookDao) {
-        this.bookDao = bookDao;
+    public void setBookRepository(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
     }
 
     public BookDto bookToBookDto(Book book) {
@@ -51,8 +53,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> getAllBooks() {
-        List<Book> books = bookDao.getAllBooks();
+    public List<BookDto> getAllBooks(Pageable pageable) {
+        Page<Book> books = bookRepository.findBookByDeletedFalse(pageable);
         List<BookDto> bookDtos = new ArrayList<>();
         for (Book book : books) {
             BookDto bookDto = bookToBookDto(book);
@@ -64,7 +66,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto getBookById(Long id) {
         try {
-            Book book = bookDao.getBookById(id);
+            Book book = bookRepository.getById(id);
             return bookToBookDto(book);
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -75,28 +77,28 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto createBook(BookDto bookDto) {
         Book bookToCreate = bookDtoToBook(bookDto);
-        return bookToBookDto(bookDao.createBook(bookToCreate));
+        return bookToBookDto(bookRepository.save(bookToCreate));
     }
 
     @Override
     public BookDto updateBook(BookDto bookDto) {
-        Book book = bookDao.getBookById(bookDto.getId());
+        Book book = bookRepository.getById(bookDto.getId());
         if (book != null && !Objects.equals(book.getId(), bookDto.getId())) {
             throw new RuntimeException("You can't update this book");
         }
         Book bookToUpdate = bookDtoToBook(bookDto);
-        return bookToBookDto(bookDao.updateBook(bookToUpdate));
+        return bookToBookDto(bookRepository.save(bookToUpdate));
     }
 
     @Override
     public void deleteBook(Long id) {
-        if (!bookDao.deleteBook(id)) {
-            throw new RuntimeException("This book didn't deleted!");
-        }
+        Book book = bookRepository.getById(id);
+        book.setDeleted(true);
+        bookRepository.save(book);
     }
 
     @Override
     public void countAllBooks() {
-        System.out.println("Count of all books is " + bookDao.countAllBooks());
+        bookRepository.count();
     }
 }

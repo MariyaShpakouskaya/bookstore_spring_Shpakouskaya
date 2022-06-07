@@ -1,13 +1,11 @@
 package com.belhard.bookstore.dao.impl;
 
-import com.belhard.bookstore.dao.BookDao;
 import com.belhard.bookstore.dao.entity.Book;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
