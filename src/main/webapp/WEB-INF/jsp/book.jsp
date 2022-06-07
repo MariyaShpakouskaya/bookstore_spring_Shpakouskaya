@@ -1,5 +1,3 @@
-<%@ page import="com.belhard.bookstore.service.impl.BookServiceImpl" %>
-<%@ page import="com.belhard.bookstore.service.dto.BookDto" %>
 <%@ page contentType="text.html;charset=UTF-8" language="java" %>
 <html>
     <head>
@@ -28,7 +26,7 @@
         <br/>
         <ul>
             <li>
-                <a href="/books">All books</a>
+                <a href="/books?page=1">All books</a>
             </li>
             <br/>
             <br/>

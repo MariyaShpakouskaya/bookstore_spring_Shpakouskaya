@@ -10,19 +10,13 @@
 <h1>Books</h1>
 <table id="t1" width="100%">
     <tr>
-        <c:if test="${no}">
-            <th>No</th>
-        </c:if>
         <th>id</th>
         <th>User</th>
         <th>Total cost</th>
         <th>Details</th>
     </tr>
-    <c:forEach items="${orders}" var="order" varStatus="counter">
+    <c:forEach items="${orders}" var="order">
         <tr>
-            <c:if test="${no}">
-                <td>${counter.count}</td>
-            </c:if>
             <td>${order.id}</td>
             <td>${order.userDto.lastName} ${order.userDto.firstName}</td>
             <td>${order.totalCost} byn</td>

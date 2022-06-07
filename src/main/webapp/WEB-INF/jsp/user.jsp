@@ -1,5 +1,3 @@
-<%@ page import="com.belhard.bookstore.service.impl.UserServiceImpl" %>
-<%@ page import="com.belhard.bookstore.service.dto.UserDto" %>
 <%@ page contentType="text.html;charset=UTF-8" language="java" %>
 <html>
     <head>
@@ -25,7 +23,7 @@
         <br/>
         <ul>
             <li>
-                <a href="/users">All users</a>
+                <a href="/users?page=1">All users</a>
             </li>
             <br/>
             <br/>
