@@ -1,9 +1,9 @@
 # Bookstore
 
-This project is an online bookstore.
+This is an application for Java Professional Training Course.
 
-* module 1 - book object (entity)
-* module 2 - bookDto object (service) 
-* module 3 - user objects (entity and service)
-* module 4 - servlet
-* module 5 - jsp
+* module 1 - Configuration (Annotation)
+* module 2 - Spring Boot
+* module 3 - Order and orderItem
+* module 4 - Jpa
+* module 5 - Spring Data
