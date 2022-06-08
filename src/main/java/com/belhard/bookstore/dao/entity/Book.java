@@ -50,7 +50,6 @@ public class Book {
     }
 
     public enum Cover {
-        NO_COVER,
         SOFT,
         HARD,
         SPECIAL

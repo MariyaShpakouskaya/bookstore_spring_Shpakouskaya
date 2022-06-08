@@ -1,5 +1,3 @@
-<%@ page import="com.belhard.bookstore.service.impl.BookServiceImpl" %>
-<%@ page import="com.belhard.bookstore.service.dto.BookDto" %>
 <%@ page contentType="text.html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -12,19 +10,13 @@
         <h1>Books</h1>
         <table id="t1" width="100%">
             <tr>
-                <c:if test="${no}">
-                    <th>No</th>
-                </c:if>
                 <th>id</th>
                 <th>Title</th>
                 <th>Author</th>
                 <th>View</th>
             </tr>
-            <c:forEach items="${books}" var="book" varStatus="counter">
+            <c:forEach items="${books}" var="book">
                 <tr>
-                    <c:if test="${no}">
-                        <td>${counter.count}</td>
-                    </c:if>
                     <td>${book.id}</td>
                     <td>${book.title}</td>
                     <td>${book.author}</td>
@@ -37,6 +29,16 @@
             </c:forEach>
         </table>
         <br/>
+        <ul>
+            <li>
+                <c:if test="${page>1}">
+                    <a href="/books?page=${page-1}">Previous page</a>
+                </c:if>
+                <c:if test="${page<=pages}">
+                    <a style="padding:5px" href="/books?page=${page+1}">Next page</a>
+                </c:if>
+            </li>
+        </ul>
         <ul>
             <li>
                 <a href="/">Main</a>

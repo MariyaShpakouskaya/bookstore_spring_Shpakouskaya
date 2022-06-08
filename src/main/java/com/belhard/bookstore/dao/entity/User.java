@@ -50,7 +50,6 @@ public class User {
     }
 
     public enum Role {
-        NO_ROLE,
         ADMIN,
         MANAGER,
         CUSTOMER

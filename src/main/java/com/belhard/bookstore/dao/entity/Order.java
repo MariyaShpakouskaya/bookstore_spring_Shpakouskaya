@@ -57,7 +57,6 @@ public class Order {
     }
 
     public enum Status {
-        NOT_STATUS,
         CREATED,
         PROCESSED,
         COMPLETED

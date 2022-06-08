@@ -37,7 +37,7 @@
 <br/>
 <ul>
     <li>
-        <a href="/orders">All orders</a>
+        <a href="/orders?page=1">All orders</a>
     </li>
     <br/>
     <br/>

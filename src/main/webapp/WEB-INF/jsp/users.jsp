@@ -1,5 +1,3 @@
-<%@ page import="com.belhard.bookstore.service.impl.UserServiceImpl" %>
-<%@ page import="com.belhard.bookstore.service.dto.UserDto" %>
 <%@ page contentType="text.html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -11,19 +9,13 @@
         <h1>Users</h1>
         <table id="t1" width="100%">
             <tr>
-                <c:if test="${no}">
-                    <th>No</th>
-                </c:if>
                 <th>id</th>
                 <th>First name</th>
                 <th>Last name</th>
                 <th>View</th>
             </tr>
-            <c:forEach items="${users}" var="user" varStatus="counter">
+            <c:forEach items="${users}" var="user">
                 <tr>
-                    <c:if test="${no}">
-                        <td>${counter.count}</td>
-                    </c:if>
                     <td>${user.id}</td>
                     <td>${user.firstName}</td>
                     <td>${user.lastName}</td>
@@ -36,6 +28,16 @@
             </c:forEach>
         </table>
         <br/>
+        <ul>
+            <li>
+                <c:if test="${page>1}">
+                    <a href="/users?page=${page-1}">Previous page</a>
+                </c:if>
+                <c:if test="${page<=pages}">
+                    <a style="padding:5px" href="/users?page=${page+1}">Next page</a>
+                </c:if>
+            </li>
+        </ul>
         <ul>
             <li>
                 <a href="/">Main</a>

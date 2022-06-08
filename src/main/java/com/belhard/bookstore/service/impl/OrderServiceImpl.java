@@ -1,9 +1,9 @@
 package com.belhard.bookstore.service.impl;
 
-import com.belhard.bookstore.dao.BookDao;
-import com.belhard.bookstore.dao.OrderDao;
-import com.belhard.bookstore.dao.OrderItemDao;
-import com.belhard.bookstore.dao.UserDao;
+import com.belhard.bookstore.dao.BookRepository;
+import com.belhard.bookstore.dao.OrderItemRepository;
+import com.belhard.bookstore.dao.OrderRepository;
+import com.belhard.bookstore.dao.UserRepository;
 import com.belhard.bookstore.dao.entity.Order;
 import com.belhard.bookstore.dao.entity.OrderItem;
 import com.belhard.bookstore.service.BookService;
@@ -11,33 +11,35 @@ import com.belhard.bookstore.service.OrderService;
 import com.belhard.bookstore.service.UserService;
 import com.belhard.bookstore.service.dto.OrderDto;
 import com.belhard.bookstore.service.dto.OrderItemDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service("orderService")
+@Service
 public class OrderServiceImpl implements OrderService {
-    private final OrderDao orderDao;
-    private final OrderItemDao orderItemDao;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
-    private final UserDao userDao;
+    private final BookRepository bookRepository;
     private final BookService bookService;
-    private final BookDao bookDao;
 
-    public OrderServiceImpl(OrderDao orderDao, OrderItemDao orderItemDao, UserService userService, UserDao userDao, BookService bookService, BookDao bookDao) {
-        this.orderDao = orderDao;
-        this.orderItemDao = orderItemDao;
+    public OrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, UserRepository userRepository, UserService userService, BookRepository bookRepository, BookService bookService) {
+        this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.userRepository = userRepository;
         this.userService = userService;
-        this.userDao = userDao;
+        this.bookRepository = bookRepository;
         this.bookService = bookService;
-        this.bookDao = bookDao;
     }
 
     @Override
-    public List<OrderDto> getAll() {
-        List<Order> orders = orderDao.getAll();
+    public List<OrderDto> getAll(Pageable pageable) {
+        Page<Order> orders = orderRepository.findAll(pageable);
         List<OrderDto> orderDtos = new ArrayList<>();
         for (Order order : orders) {
             OrderDto orderDto = mapToDto(order);
@@ -48,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto getById(Long id) {
-        Order order = orderDao.getById(id);
+        Order order = orderRepository.getById(id);
         return mapToDto(order);
     }
 
@@ -56,10 +58,10 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto create(OrderDto orderDto) {
         orderDto.setTotalCost(calculateOrderCost(orderDto));
         Order entity = mapToEntity(orderDto);
-        orderDao.create(entity);
+        orderRepository.save(entity);
         List<OrderItemDto> orderItemDtos = orderDto.getOrderItemDtos();
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            orderItemDao.create(mapToItemEntity(orderItemDto));
+            orderItemRepository.save(mapToItemEntity(orderItemDto));
         }
         return getById(orderDto.getId());
     }
@@ -68,25 +70,36 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto update(OrderDto orderDto) {
         orderDto.setTotalCost(calculateOrderCost(orderDto));
         Order entity = mapToEntity(orderDto);
-        orderDao.update(entity);
-        List<OrderItem> orderItems = orderItemDao.getByOrderId(orderDto.getId());
+        orderRepository.save(entity);
+        List<OrderItem> orderItems = orderItemRepository.getOrderItemsByOrderId(orderDto.getId());
         for (OrderItem orderItem : orderItems) {
-            orderItemDao.delete(orderItem.getId());
+            orderItem = orderItemRepository.getById(orderItem.getId());
+            orderItem.setDeleted(true);
+            orderItemRepository.save(orderItem);
         }
         List<OrderItemDto> orderItemDtos = orderDto.getOrderItemDtos();
         for (OrderItemDto orderItemDto : orderItemDtos) {
-            orderItemDao.create(mapToItemEntity(orderItemDto));
+            orderItemRepository.save(mapToItemEntity(orderItemDto));
         }
         return getById(orderDto.getId());
     }
 
     @Override
     public void delete(Long id) {
-        List<OrderItem> orderItems = orderItemDao.getByOrderId(id);
+        List<OrderItem> orderItems = orderItemRepository.getOrderItemsByOrderId(id);
         for (OrderItem orderItem : orderItems) {
-            orderItemDao.delete(orderItem.getId());
+            orderItem = orderItemRepository.getById(orderItem.getId());
+            orderItem.setDeleted(true);
+            orderItemRepository.save(orderItem);
         }
-        orderDao.delete(id);
+        Order order = orderRepository.getById(id);
+        order.setDeleted(true);
+        orderRepository.save(order);
+    }
+
+    @Override
+    public int countAll() {
+        return (int) orderRepository.count();
     }
 
     private BigDecimal calculateOrderCost(OrderDto orderDto) {
@@ -102,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
     private Order mapToEntity(OrderDto orderDto) {
         Order entity = new Order();
         entity.setId(orderDto.getId());
-        entity.setUser(userDao.getUserById(orderDto.getUserDto().getId()));
+        entity.setUser(userRepository.getById(orderDto.getUserDto().getId()));
         entity.setTotalCost(orderDto.getTotalCost());
         entity.setStatus(Order.Status.valueOf(orderDto.getStatus().toString()));
         entity.setTimestamp(orderDto.getTimestamp());
@@ -112,10 +125,10 @@ public class OrderServiceImpl implements OrderService {
     private OrderItem mapToItemEntity(OrderItemDto orderItemDto) {
         OrderItem orderItem = new OrderItem();
         orderItem.setId(orderItemDto.getId());
-        orderItem.setOrder(orderDao.getById(orderItemDto.getOrderId()));
+        orderItem.setOrder(orderRepository.getById(orderItemDto.getOrderId()));
         orderItem.setPrice(orderItemDto.getPrice());
         orderItem.setQuantity(orderItemDto.getQuantity());
-        orderItem.setBook(bookDao.getBookById(orderItemDto.getBookDto().getId()));
+        orderItem.setBook(bookRepository.getById(orderItemDto.getBookDto().getId()));
         return orderItem;
     }
 
@@ -126,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setTotalCost(order.getTotalCost());
         orderDto.setTimestamp(order.getTimestamp());
         orderDto.setStatus(OrderDto.Status.valueOf(order.getStatus().toString().toUpperCase()));
-        List<OrderItem> orderItems = orderItemDao.getByOrderId(order.getId());
+        List<OrderItem> orderItems = orderItemRepository.getOrderItemsByOrderId(order.getId());
         List<OrderItemDto> orderItemDtos = new ArrayList<>();
         for (OrderItem orderItem : orderItems) {
             orderItemDtos.add(mapOrderItemToDto(orderItem));

@@ -1,6 +1,5 @@
 package com.belhard.bookstore.dao.impl;
 
-import com.belhard.bookstore.dao.UserDao;
 import com.belhard.bookstore.dao.entity.User;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.belhard.bookstore.dao;
+package com.belhard.bookstore.dao.impl;
 
 import com.belhard.bookstore.dao.entity.Order;
 

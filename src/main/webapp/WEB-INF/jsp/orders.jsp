@@ -10,19 +10,13 @@
 <h1>Books</h1>
 <table id="t1" width="100%">
     <tr>
-        <c:if test="${no}">
-            <th>No</th>
-        </c:if>
         <th>id</th>
         <th>User</th>
         <th>Total cost</th>
         <th>Details</th>
     </tr>
-    <c:forEach items="${orders}" var="order" varStatus="counter">
+    <c:forEach items="${orders}" var="order">
         <tr>
-            <c:if test="${no}">
-                <td>${counter.count}</td>
-            </c:if>
             <td>${order.id}</td>
             <td>${order.userDto.lastName} ${order.userDto.firstName}</td>
             <td>${order.totalCost} byn</td>
@@ -35,6 +29,16 @@
     </c:forEach>
 </table>
 <br/>
+<ul>
+    <li>
+        <c:if test="${page>1}">
+            <a href="/orders?page=${page-1}">Previous page</a>
+        </c:if>
+        <c:if test="${page<=pages}">
+            <a style="padding:5px" href="/orders?page=${page+1}">Next page</a>
+        </c:if>
+    </li>
+</ul>
 <ul>
     <li>
         <a href="/">Main</a>

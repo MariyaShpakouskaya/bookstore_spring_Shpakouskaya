@@ -9,6 +9,7 @@
     <h1>It was successfully deleted</h1>
     <div>${message}</div>
     <br/>
+    <br/>
     <ul>
         <li><a href="/">Main</a></li>
     </ul>

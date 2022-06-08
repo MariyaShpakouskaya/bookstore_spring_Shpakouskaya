@@ -1,6 +1,5 @@
 package com.belhard.bookstore.dao.impl;
 
-import com.belhard.bookstore.dao.OrderItemDao;
 import com.belhard.bookstore.dao.entity.OrderItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
