@@ -8,20 +8,20 @@ TRUNCATE items_order CASCADE;
 TRUNCATE status CASCADE;
 */
 
-INSERT INTO covers (name)
-VALUES ('SOFT'),
-       ('HARD'),
-       ('SPECIAL');
+INSERT INTO covers (id, name)
+VALUES ('0', 'SOFT'),
+       ('1', 'HARD'),
+       ('2', 'SPECIAL');
 
-INSERT INTO roles (name)
-VALUES ('ADMIN'),
-       ('MANAGER'),
-       ('CUSTOMER');
+INSERT INTO roles (id, name)
+VALUES ('0', 'ADMIN'),
+       ('1', 'MANAGER'),
+       ('2', 'CUSTOMER');
 
-INSERT INTO status (name)
-VALUES ('CREATED'),
-       ('PROCESSED'),
-       ('COMPLETED');
+INSERT INTO status (id, name)
+VALUES ('0', 'CREATED'),
+       ('1', 'PROCESSED'),
+       ('2', 'COMPLETED');
 
 INSERT INTO books (isbn, author, title, cover_id, price)
 VALUES ('5-273-00064-5', 'I.Garin', 'Nitshe', (SELECT id FROM covers WHERE name = 'HARD'), '23.20'),
@@ -71,15 +71,15 @@ VALUES ('Maryia', 'Fedorova', 'cooking@mail.ru', 'Qwerty1', (SELECT id FROM role
         (SELECT id FROM roles WHERE name = 'CUSTOMER'));
 
 INSERT INTO orders(user_id, totalCost, timestamp, status_id)
-VALUES ((SELECT id FROM users WHERE email = 'NikitaKol85@mail.ru'), (SELECT price FROM order_items), '2022-05-26',
+VALUES ((SELECT id FROM users WHERE email = 'NikitaKol85@mail.ru'), '53.78', '2022-05-26',
         (SELECT id FROM status WHERE name = 'COMPLETED')),
-       ((SELECT id FROM users WHERE email = 'gladeTwo@gmail.com'), (SELECT price FROM order_items), '2022-05-23',
-        (SELECT id FROM status WHERE name = 'CREATED')),
-       ((SELECT id FROM users WHERE email = 'Ti_12_52@mail.ru'), (SELECT price FROM order_items), '2022-05-22',
+       ((SELECT id FROM users WHERE email = 'gladeTwo@gmail.com'), '50.13', '2022-05-23',
         (SELECT id FROM status WHERE name = 'PROCESSED')),
-       ((SELECT id FROM users WHERE email = 'Pabloking@mail.ru'), (SELECT price FROM order_items), '2022-04-26',
+       ((SELECT id FROM users WHERE email = 'Ti_12_52@mail.ru'), '14.30', '2022-05-22',
         (SELECT id FROM status WHERE name = 'PROCESSED')),
-       ((SELECT id FROM users WHERE email = 'filePloy@mail.ru'), (SELECT price FROM order_items), '2022-04-25',
+       ((SELECT id FROM users WHERE email = 'Pabloking@mail.ru'), '12.60', '2022-04-26',
+        (SELECT id FROM status WHERE name = 'PROCESSED')),
+       ((SELECT id FROM users WHERE email = 'filePloy@mail.ru'), '19.20', '2022-04-25',
         (SELECT id FROM status WHERE name = 'PROCESSED'));
 
 
