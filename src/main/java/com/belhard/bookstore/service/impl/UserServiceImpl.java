@@ -6,9 +6,7 @@ import com.belhard.bookstore.service.UserService;
 import com.belhard.bookstore.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers(Pageable pageable) {
-        Page<User> users = userRepository.findUserByDeletedFalse(pageable);
+        Page<User> users = userRepository.findUsersByDeletedFalse(pageable);
         List<UserDto> userDtos = new ArrayList<>();
         for (User user : users) {
             UserDto userDto = userToUserDto(user);
@@ -111,7 +109,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void countAllUsers() {
-        userRepository.count();
+    public int countAllUsers() {
+        return (int) userRepository.count();
     }
 }

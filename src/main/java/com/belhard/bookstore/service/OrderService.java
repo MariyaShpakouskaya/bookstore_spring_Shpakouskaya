@@ -16,4 +16,6 @@ public interface OrderService {
     OrderDto update(OrderDto orderDto);
 
     void delete(Long id);
+
+    int countAll();
 }

@@ -24,6 +24,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/books")
 public class BookController {
+    public static final int SIZE_OF_PAGE = 10;
+    public static final String SORT_COLUMN = "id";
     private final BookService bookService;
 
     @Autowired
@@ -33,11 +35,13 @@ public class BookController {
 
     @GetMapping
     public String getAllBooks(Model model, @RequestParam int page) {
-        int size = 10;
-        String sortColumn = "id";
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.ASC, sortColumn);
+        int quantityOfPages = (bookService.countAllBooks()) / SIZE_OF_PAGE;
+        System.out.println(bookService.countAllBooks());
+        Pageable pageable = PageRequest.of(page - 1, SIZE_OF_PAGE, Sort.Direction.ASC, SORT_COLUMN);
         List<BookDto> bookDtos = bookService.getAllBooks(pageable);
         model.addAttribute("books", bookDtos);
+        model.addAttribute("page", page);
+        model.addAttribute("pages", quantityOfPages);
         return "books";
     }
 

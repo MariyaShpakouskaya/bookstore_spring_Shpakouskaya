@@ -98,7 +98,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void countAllBooks() {
-        bookRepository.count();
+    public int countAllBooks() {
+        return (int) bookRepository.count();
     }
 }

@@ -18,7 +18,7 @@ public interface BookService {
 
     void deleteBook(Long id);
 
-    void countAllBooks();
+    int countAllBooks();
 
     BookDto bookToBookDto(Book book);
 

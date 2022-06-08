@@ -17,9 +17,6 @@
             </tr>
             <c:forEach items="${books}" var="book">
                 <tr>
-                    <c:if test="${no}">
-                        <td>${counter.count}</td>
-                    </c:if>
                     <td>${book.id}</td>
                     <td>${book.title}</td>
                     <td>${book.author}</td>
@@ -32,6 +29,16 @@
             </c:forEach>
         </table>
         <br/>
+        <ul>
+            <li>
+                <c:if test="${page>1}">
+                    <a href="/books?page=${page-1}">Previous page</a>
+                </c:if>
+                <c:if test="${page<=pages}">
+                    <a style="padding:5px" href="/books?page=${page+1}">Next page</a>
+                </c:if>
+            </li>
+        </ul>
         <ul>
             <li>
                 <a href="/">Main</a>

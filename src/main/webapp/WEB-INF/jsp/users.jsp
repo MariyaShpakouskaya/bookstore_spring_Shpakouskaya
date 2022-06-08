@@ -30,6 +30,16 @@
         <br/>
         <ul>
             <li>
+                <c:if test="${page>1}">
+                    <a href="/users?page=${page-1}">Previous page</a>
+                </c:if>
+                <c:if test="${page<=pages}">
+                    <a style="padding:5px" href="/users?page=${page+1}">Next page</a>
+                </c:if>
+            </li>
+        </ul>
+        <ul>
+            <li>
                 <a href="/">Main</a>
             </li>
         </ul>

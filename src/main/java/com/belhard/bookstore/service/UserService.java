@@ -22,7 +22,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void countAllUsers();
+    int countAllUsers();
 
     UserDto userToUserDto(User user);
 

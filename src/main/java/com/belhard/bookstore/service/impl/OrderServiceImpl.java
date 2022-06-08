@@ -97,6 +97,11 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
+    @Override
+    public int countAll() {
+        return (int) orderRepository.count();
+    }
+
     private BigDecimal calculateOrderCost(OrderDto orderDto) {
         List<OrderItemDto> orderItemDtos = orderDto.getOrderItemDtos();
         BigDecimal totalCost = BigDecimal.ZERO;

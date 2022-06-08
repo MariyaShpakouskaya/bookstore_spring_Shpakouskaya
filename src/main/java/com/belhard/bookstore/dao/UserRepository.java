@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Page<User> findUserByDeletedFalse(Pageable pageable);
+    Page<User> findUsersByDeletedFalse(Pageable pageable);
 
     User findUserByLastName(String lastName);
 
