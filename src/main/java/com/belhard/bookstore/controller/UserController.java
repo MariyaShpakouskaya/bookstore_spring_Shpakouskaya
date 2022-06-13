@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping
     public String getAllUsers(Model model, @RequestParam int page) {
-        int quantityOfPages = (userService.countAllUsers()) / SIZE_OF_PAGE;
+        int quantityOfPages = (userService.countAllUsers() - 1) / SIZE_OF_PAGE;
         Pageable pageable = PageRequest.of(page - 1, SIZE_OF_PAGE, Sort.Direction.ASC, SORT_COLUMN);
         List<UserDto> userDtos = userService.getAllUsers(pageable);
         model.addAttribute("users", userDtos);

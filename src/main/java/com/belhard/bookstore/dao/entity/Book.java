@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -19,20 +21,27 @@ public class Book {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "isbn", nullable = true, length = 50, unique = true)
+    @Column(name = "isbn", length = 50, unique = true)
+    @Pattern(regexp = "^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$")
+    @NotNull
     private String isbn;
 
-    @Column(name = "author", nullable = true, length = 100)
+    @Column(name = "author", length = 100)
+    @Pattern(regexp = "^[^<>%$]*$")
+    @NotNull
     private String author;
 
-    @Column(name = "title", nullable = true, length = 100)
+    @Column(name = "title", length = 100)
+    @Pattern(regexp = "^[^<>%$]*$")
+    @NotNull
     private String title;
 
     @Enumerated
     @Column(name = "cover_id")
     private Cover cover;
 
-    @Column(name = "price", columnDefinition = "decimal(8,2) default 0.0", nullable = true)
+    @Column(name = "price", columnDefinition = "decimal(8,2) default 0.0")
+    @NotNull
     private BigDecimal price;
 
     @Column(name = "deleted")

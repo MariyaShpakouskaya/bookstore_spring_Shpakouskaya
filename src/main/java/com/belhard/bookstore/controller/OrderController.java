@@ -31,7 +31,7 @@ public class OrderController {
 
     @GetMapping
     public String getAll(Model model, @RequestParam int page) {
-        int quantityOfPages = (orderService.countAll()) / SIZE_OF_PAGE;
+        int quantityOfPages = (orderService.countAll() - 1) / SIZE_OF_PAGE;
         Pageable pageable = PageRequest.of(page - 1, SIZE_OF_PAGE, Sort.Direction.ASC, SORT_COLUMN);
         List<OrderDto> orderDtos = orderService.getAll(pageable);
         model.addAttribute("orders", orderDtos);

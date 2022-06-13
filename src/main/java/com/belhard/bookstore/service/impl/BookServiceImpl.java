@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
-@Service("bookService")
+@Service
 public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
@@ -65,13 +66,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getBookById(Long id) {
-        try {
-            Book book = bookRepository.getById(id);
+            Book book = bookRepository.findById(id).orElseThrow(() ->
+                    new RuntimeException("No book with this id " + id));
             return bookToBookDto(book);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Override
@@ -99,6 +96,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public int countAllBooks() {
-        return (int) bookRepository.count();
+        return (int) bookRepository.countBooksByDeletedFalse();
     }
 }

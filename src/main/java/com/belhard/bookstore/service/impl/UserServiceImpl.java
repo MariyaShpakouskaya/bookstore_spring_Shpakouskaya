@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Service("userService")
+@Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
@@ -64,13 +64,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        try {
-            User user = userRepository.getById(id);
-            return userToUserDto(user);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return null;
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("User is never exist with this id: " + id));
+        return userToUserDto(user);
     }
 
     @Override
@@ -110,6 +106,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int countAllUsers() {
-        return (int) userRepository.count();
+        return (int) userRepository.countUsersByDeletedFalse();
     }
 }

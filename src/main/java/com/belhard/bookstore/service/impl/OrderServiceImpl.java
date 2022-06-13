@@ -50,7 +50,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto getById(Long id) {
-        Order order = orderRepository.getById(id);
+        Order order = orderRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("This order is not exist!"));
         return mapToDto(order);
     }
 
@@ -99,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int countAll() {
-        return (int) orderRepository.count();
+        return (int) orderRepository.countOrdersByDeletedFalse();
     }
 
     private BigDecimal calculateOrderCost(OrderDto orderDto) {

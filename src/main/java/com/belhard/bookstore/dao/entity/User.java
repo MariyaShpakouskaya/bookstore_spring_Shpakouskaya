@@ -1,5 +1,7 @@
 package com.belhard.bookstore.dao.entity;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -8,6 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 @Entity
@@ -19,16 +24,26 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "first_name", nullable = true, length = 100)
+    @Column(name = "first_name", length = 100)
+    @Pattern(regexp = "^[A-Z][a-z]*(\\s(([a-z]{1,3})|(([a-z]+\\')?[A-Z][a-z]*)))*$")
+    @Length(min = 2)
+    @NotNull
     private String firstName;
 
-    @Column(name = "last_name", nullable = true, length = 100)
+    @Column(name = "last_name", length = 100)
+    @Pattern(regexp = "^[A-Z][a-z]*(\\s(([a-z]{1,3})|(([a-z]+\\')?[A-Z][a-z]*)))*$")
+    @Length(min = 2)
+    @NotNull
     private String lastName;
 
-    @Column(name = "email", nullable = true, length = 100)
+    @Column(name = "email", length = 100)
+    @Email(regexp = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
+    @NotNull
     private String email;
 
-    @Column(name = "password", nullable = true, length = 100)
+    @Column(name = "password", length = 100)
+    @Pattern(regexp = "^[^<>%$]*$")
+    @NotNull
     private String password;
 
     @Enumerated(EnumType.ORDINAL)
