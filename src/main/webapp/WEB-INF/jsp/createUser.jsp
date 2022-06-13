@@ -16,7 +16,11 @@
     <input id="last name" name="last_name" type="text"/>
     <br/>
     <label for="role">Role: </label>
-    <input id="role" name="role" type="text"/>
+    <select id="role" name="role" required="required">
+        <option value="customer"> customer</option>
+        <option value="manager"> manager</option>
+        <option value="admin"> admin</option>
+    </select>
     <br/>
     <label for="password">Password: </label>
     <input id="password" name="password" type="text"/>

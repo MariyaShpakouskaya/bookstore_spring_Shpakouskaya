@@ -16,7 +16,12 @@
     <input id="last name" name="last_name" type="text" value="${user.lastName}"/>
     <br/>
     <label for="role">Role: </label>
-    <input id="role" name="role" type="text" value="${user.role.toString().toUpperCase()}"/>
+    <select id="role" name="role" required="required">
+        <option value="${user.role.toString()}"> now is ${user.role.toString().toLowerCase()}</option>
+        <option value="customer"> customer</option>
+        <option value="manager"> manager</option>
+        <option value="admin"> admin</option>
+    </select>
     <br/>
     <label for="password">Password: </label>
     <input id="password" name="password" type="text" value="${user.password}"/>

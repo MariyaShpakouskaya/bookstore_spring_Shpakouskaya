@@ -16,7 +16,11 @@
     <input id="title" name="title" type="text"/>
     <br/>
     <label for="cover">Cover: </label>
-    <input id="cover" name="cover" type="text"/>
+    <select id="cover" name="cover" required="required">
+        <option value="soft"> soft</option>
+        <option value="hard"> hard</option>
+        <option value="special"> special</option>
+    </select>
     <br/>
     <label for="price">Price: </label>
     <input id="price" name="price" type="text"/>
