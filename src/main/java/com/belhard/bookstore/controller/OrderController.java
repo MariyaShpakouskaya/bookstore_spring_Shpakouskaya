@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -47,5 +48,12 @@ public class OrderController {
         model.addAttribute("order", orderDto);
         model.addAttribute("items", orderItemDtos);
         return "order";
+    }
+
+    @PostMapping("delete/{id}")
+    public String delete(Model model, @PathVariable Long id) {
+        orderService.delete(id);
+        model.addAttribute("message", "Order with id " + id + " deleted");
+        return "deleted";
     }
 }

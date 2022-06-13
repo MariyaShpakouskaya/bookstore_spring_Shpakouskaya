@@ -25,6 +25,11 @@
                     <input type="submit" value="View"/>
                 </form>
             </td>
+            <td>
+                <form action="/orders/delete/${order.id}" method="post">
+                    <input type="submit" value="Delete"/>
+                </form>
+            </td>
         </tr>
     </c:forEach>
 </table>

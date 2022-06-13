@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="../css/style.css"/>
 </head>
 <body>
-<form action="/books/delete/${book.id}" method="post">
+<form action="/delete/${id}" method="post">
     <h1>It was successfully deleted</h1>
     <div>${message}</div>
     <br/>
